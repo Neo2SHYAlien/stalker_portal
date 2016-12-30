@@ -276,6 +276,10 @@
         <exec command="mkdir -p --mode=0777 ${project_path}/admin/resources/cache/sidebar" level="info"/>
         <exec command="find ${project_path}/admin/resources/cache/sidebar/ -type f -name '*_bar' -delete" level="info"/>
 
+        <exec command="mkdir -p --mode=0777 ${project_path}/admin/resources/cache/assetic" level="info"/>
+        <exec command="mkdir -p --mode=0777 ${project_path}/server/adm/css/min/default" level="info"/>
+        <exec command="mkdir -p --mode=0777 ${project_path}/server/adm/js/min/default" level="info"/>
+
         <exec command="mkdir ${project_path}/deploy/composer" level="info"/>
         <exec command="mkdir ${project_path}/../${apps_path}" level="info"/>
         <chmod file="${project_path}/../${apps_path}" mode="0777" />

@@ -142,8 +142,12 @@ class BaseStalkerController {
         $tmp = explode('/', trim($this->request->getPathInfo(), '/'));
         $this->app['controller_alias'] = $tmp[0];
         $this->app['action_alias'] = (count($tmp) == 2) ? $tmp[1] : '';
-        $this->app['ext_script_path'] = '/' . (!empty($tmp[0]) ? ucfirst($tmp[0]): 'Index') . '/' . (!empty($tmp[1]) ? $tmp[1]: 'index');
         $getenv = getenv('STALKER_ENV');
+        $ext_path = (!empty($tmp[0]) ? ucfirst($tmp[0]): 'Index') . '/' . (!empty($tmp[1]) ? $tmp[1]: 'index') . '/';
+        if (!$getenv) {
+            $ext_path = strtolower(str_replace('/', '_', $ext_path));
+        }
+        $this->app['ext_script_path'] = '/' . $ext_path;
         $this->app['stalker_env'] = ($getenv && $getenv == 'develop') ? 'dev': 'min';
         $this->baseHost = $this->request->getSchemeAndHttpHost();
         $this->workHost = $this->baseHost . Config::getSafe('portal_url', '/stalker_portal/');

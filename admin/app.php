@@ -132,28 +132,27 @@ $app->extend('twig', function ($twig, $app) {
     return $twig;
 });
 
-if (getenv('STALKER_ENV') && !(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' )) {
-    $app->register(new SilexAssetic\AsseticServiceProvider(),
-        array(
-            'assetic.path_to_web' => __DIR__ . '/../server/adm',
-            'assetic.options' => array(
-                'auto_dump_assets' => true,
-                'debug' => false
-            ),
-            'assetic.filters' => $app->protect(function($fm) {
-                $fm->set('yui_css', new Assetic\Filter\Yui\CssCompressorFilter(
-                    '/usr/share/yui-compressor/yui-compressor.jar'
-                ));
-                $fm->set('yui_js', new Assetic\Filter\Yui\JsCompressorFilter(
-                    '/usr/share/yui-compressor/yui-compressor.jar'
-                ));
-                $fm->set('uglifyjs2', new \Assetic\Filter\UglifyJs2Filter(
-                    '/usr/local/bin/uglifyjs'
-                ));
-                $fm->set('uglifycss', new \Assetic\Filter\UglifyCssFilter(
-                    '/usr/local/bin/uglifycss'
-                ));
-            })
-        ));
-}
+$auto_dump_assets = (getenv('STALKER_ENV') && !(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ));
+$app->register(new SilexAssetic\AsseticServiceProvider(),
+    array(
+        'assetic.path_to_web' => __DIR__ . '/../server/adm',
+        'assetic.options' => array(
+            'auto_dump_assets' => $auto_dump_assets,                        // ручное управление минимизацией на лету true - включить, false - отключить
+            'debug' => false
+        ),
+        'assetic.filters' => $app->protect(function($fm) {
+            $fm->set('yui_css', new Assetic\Filter\Yui\CssCompressorFilter( // sudo apt-get install yui-compressor
+                '/usr/share/yui-compressor/yui-compressor.jar'
+            ));
+            $fm->set('yui_js', new Assetic\Filter\Yui\JsCompressorFilter(
+                '/usr/share/yui-compressor/yui-compressor.jar'
+            ));
+            $fm->set('uglifyjs2', new \Assetic\Filter\UglifyJs2Filter(
+                '/usr/local/bin/uglifyjs'
+            ));
+            $fm->set('uglifycss', new \Assetic\Filter\UglifyCssFilter(
+                '/usr/local/bin/uglifycss'
+            ));
+        })
+    ));
 return require_once 'controllers.php';
