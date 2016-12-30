@@ -8,7 +8,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 {{ main_macro.get_filter('type', 'Service'|trans , 'id', 'title', app['allPackageTypes']) }}
                 {{ main_macro.get_filter('all_services', 'Access'|trans , 'id', 'title', app['allServices']) }}
-                <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/add-service-package" class="btn btn-success pull-right">{{ 'Add package'|trans }}</a>
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-service-package" class="btn btn-success pull-right">{{ 'Add package'|trans }}</a>
             </div>
         </div>
 
@@ -49,12 +49,12 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/edit-service-package?id=" + id + "'>\n\
+                                                                <a href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-service-package?id=" + id + "'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-service-package' data-packageid='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-service-package' data-packageid='" + id + "'>\n\
                                                                     <span>{{ 'Delete'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -68,14 +68,14 @@
 
                         var name = json.data[i].name;
 
-                        json.data[i].name = '<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/edit-service-package?id=' + id + '" >' + name + '</a>';
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-service-package?id=' + id + '" >' + name + '</a>';
                     }
                 }
             }).dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/service-packages-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/service-packages-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

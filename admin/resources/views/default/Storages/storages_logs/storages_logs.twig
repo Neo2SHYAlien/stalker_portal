@@ -48,7 +48,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/storages-logs-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/storages-logs-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

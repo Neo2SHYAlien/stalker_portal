@@ -57,8 +57,8 @@
                         var state = json.data[i].state;
                         var name = json.data[i].name;
                         var messages = json.data[i].messages;
-                        json.data[i].messages = messages!="0"?'<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">{{ 'new'|trans }}</a>':'<span>-</span>';
-                        json.data[i].name = '<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' + name + '</a>';
+                        json.data[i].messages = messages!="0"?'<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">{{ 'new'|trans }}</a>':'<span>-</span>';
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' + name + '</a>';
                         
                         json.data[i].state = '<span class="txt-' + taskStateColor[state] + '">'+taskState[state]+'</span>';
                         
@@ -72,12 +72,12 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/task-state-change' data-taskid='" + id + "' data-apply='ended'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-state-change' data-taskid='" + id + "' data-apply='ended'>\n\
                                                                     <span>{{ 'Done'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/task-state-change' data-taskid='" + id + "' data-apply='rejected'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-state-change' data-taskid='" + id + "' data-apply='rejected'>\n\
                                                                     <span>{{ 'Reject'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -90,7 +90,7 @@
                 "processing": true,   
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/tasks-list-json",
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/tasks-list-json",
                     "data": function (d) {
                         d = dataTableDataPrepare(d);
                         d['task_type'] = '{{ app['task_type'] }}';

@@ -22,7 +22,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 pull-right no-padding">
                             <div class="col-xs-12 col-sm-12 pull-right">
-                                <button data-href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/set-current-theme" data-themename="{{ row['name'] }}" class="pull-right main_ajax btn btn-{% if row['name'] == app['current_theme']['name'] %}yaly" disabled="disabled">{{ 'Current'|trans }}{% else %}yal">{{ 'Apply'|trans }}{% endif %}</button>
+                                <button data-href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/set-current-theme" data-themename="{{ row['name'] }}" class="pull-right main_ajax btn btn-{% if row['name'] == app['current_theme']['name'] %}yaly" disabled="disabled">{{ 'Current'|trans }}{% else %}yal">{{ 'Apply'|trans }}{% endif %}</button>
                             </div>
                         </div>
                     </div>

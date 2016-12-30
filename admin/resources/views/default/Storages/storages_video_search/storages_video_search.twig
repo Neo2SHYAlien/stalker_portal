@@ -6,7 +6,7 @@
 {% block content %}
     <div id="iptv_list">
         <div class="row">
-            <form class="form-horizontal" role="form" id="video_search_form" action="{{ app.request.baseUrl }}/{{ app.controller_alias }}/storages-video-search-json" method="POST" target="_blank">
+            <form class="form-horizontal" role="form" id="video_search_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/storages-video-search-json" method="POST" target="_blank">
                 <div class="col-sm-12 col-xs-12 col-md-12 no-padding">
                     <div class="col-sm-2">
                         {% if attribute(app, 'dropdownStorages') is defined %}
@@ -92,7 +92,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/storages-video-search-json",
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/storages-video-search-json",
                     "data": function (d) {
                         d = dataTableDataPrepare(d);
                         $('#video_search_form input').each(function(){

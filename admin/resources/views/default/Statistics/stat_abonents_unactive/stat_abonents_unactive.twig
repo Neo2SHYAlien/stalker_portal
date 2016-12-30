@@ -46,7 +46,7 @@
                     for (var i in json.data) {
                         var id = json.data[i].id;
                         var mac = json.data[i].mac;
-                        json.data[i].mac = '<a href="{{ app.request.baseUrl }}/users/edit-users?id=' + id + '">' + mac + '</a>';
+                        json.data[i].mac = '<a href="{{ app.request_context.baseUrl }}/users/edit-users?id=' + id + '">' + mac + '</a>';
                         date = json.data[i]['time_last_play'];
                         if (date > 0 && date != '0000-00-00') {
                             date = new Date(date * 1000);
@@ -61,7 +61,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/stat-abonents-unactive-list-json",
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/stat-abonents-unactive-list-json",
                     "data": function (d) {
                         d = dataTableDataPrepare(d);
 

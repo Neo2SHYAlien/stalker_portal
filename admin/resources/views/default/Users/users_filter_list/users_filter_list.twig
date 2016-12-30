@@ -9,7 +9,7 @@
                 {{ main_macro.get_filter('admin_id', 'Author'|trans, 'id', 'login', app['allAdmins'], 2) }}
 
                 <div class="pull-right">
-                    <a href="{{ app.request.baseUrl }}/users/users-list" class="btn btn-success pull-right" data-id="all">{{ 'Create new filter'|trans }}</a>
+                    <a href="{{ app.request_context.baseUrl }}/users/users-list" class="btn btn-success pull-right" data-id="all">{{ 'Create new filter'|trans }}</a>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                         }
 
                         json.data[i].login = '<a href="#" class="no_context_menu">' + json.data[i].login + '</a>';
-                        json.data[i].title = '<a href="{{ app.request.baseUrl }}/users/users-list?filter_set='+ id +'">' + json.data[i].title + '</a>';
+                        json.data[i].title = '<a href="{{ app.request_context.baseUrl }}/users/users-list?filter_set='+ id +'">' + json.data[i].title + '</a>';
                         json.data[i].for_all = (json.data[i].for_all ? "{{ 'For all'|trans }}": "{{ 'Only for'|trans }} " + login);
                         json.data[i].favorites = (favorites ? '<span class="txt txt-danger"><i class="fa fa-star"></i></span>': '');
 
@@ -73,17 +73,17 @@
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a href='{{ app.request.baseUrl }}/users/users-list?filter_set="+ id +"'>\n\
+                                                                <a href='{{ app.request_context.baseUrl }}/users/users-list?filter_set="+ id +"'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/toggle-filter-favorite' data-id='"+ id +"' data-favorite='" + favorites + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-filter-favorite' data-id='"+ id +"' data-favorite='" + favorites + "'>\n\
                                                                     <span>" + (favorites? '{{ "Remove from favorites"|trans }}': '{{ 'Add to favorites'|trans }}') + "</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-filter' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-filter' data-id='" + id + "'>\n\
                                                                     <span> {{ 'Delete'|trans }} </span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -95,7 +95,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/users-filter-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/users-filter-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

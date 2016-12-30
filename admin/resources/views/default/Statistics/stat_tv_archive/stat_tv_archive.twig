@@ -46,7 +46,7 @@
                         for (var key in row) {
                             if (key == 'name') {
                                 var val = row[key];
-                                json.data[i][key] = '<a href="{{app.request.baseUrl}}/tv-channels/edit-channel?id=' + row.ch_id + '">'+ val +'</a>';
+                                json.data[i][key] = '<a href="{{app.request_context.baseUrl}}/tv-channels/edit-channel?id=' + row.ch_id + '">'+ val +'</a>';
                             }
                         }    
                     }
@@ -55,7 +55,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/stat-tv-archive-list-json",
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/stat-tv-archive-list-json",
                     "data": function (d) {
                         d = dataTableDataPrepare(d);
                         $('input[id^="datepicker_"]').each(function () {

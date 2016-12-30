@@ -49,7 +49,7 @@
                         for (var key in row) {
                             if (key == 'mac') {
                                 var val = row[key];
-                                json.data[i][key] = '<a href="{{app.request.baseUrl}}/users/edit-users?id=' + row.uid + '">'+ val +'</a>';
+                                json.data[i][key] = '<a href="{{app.request_context.baseUrl}}/users/edit-users?id=' + row.uid + '">'+ val +'</a>';
                             }
                         }    
                         date = json.data[i]['added'];
@@ -64,7 +64,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/stat-claims-logs-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/stat-claims-logs-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

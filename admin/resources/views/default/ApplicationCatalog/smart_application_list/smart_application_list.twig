@@ -19,7 +19,7 @@
                     </a>
                     <ul class="dropdown-menu" style="">
                         <li>
-                            <a id="upload_list" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-upload-list" class="btn btn-success no_context_menu">{{ 'Upload the list'|trans }}</a>
+                            <a id="upload_list" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-upload-list" class="btn btn-success no_context_menu">{{ 'Upload the list'|trans }}</a>
                         </li>
                         <li>
                              <a id="download_list" href="#" class="btn btn-success no_context_menu">{{ 'Save the list'|trans }}</a>
@@ -33,15 +33,15 @@
                     </a>
                     <ul class="dropdown-menu" style="">
                         <li>
-                            <a id="check_update_apps" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-check-update" data-info = '1' data-id="all" class="main_ajax btn btn-success no_context_menu">{{ 'Check updates'|trans }}</a>
+                            <a id="check_update_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-check-update" data-info = '1' data-id="all" class="main_ajax btn btn-success no_context_menu">{{ 'Check updates'|trans }}</a>
                         </li>
                         <li>
-                            <a id="update_all_apps" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-update" data-info = '1' data-id="all" class="main_ajax btn btn-success no_context_menu">{{ 'Update all'|trans }}</a>
+                            <a id="update_all_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-update" data-info = '1' data-id="all" class="main_ajax btn btn-success no_context_menu">{{ 'Update all'|trans }}</a>
                         </li>
                     </ul>
                 </div>
 
-                <a id="reset_all_apps" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-reset-all" data-info = '1' class="main_ajax btn btn-success pull-right no_context_menu">{{ 'Reset all'|trans }}</a>
+                <a id="reset_all_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-reset-all" data-info = '1' class="main_ajax btn btn-success pull-right no_context_menu">{{ 'Reset all'|trans }}</a>
                 <a id="add_apps" href="#" class="btn btn-success pull-right no_context_menu">{{ 'Add new'|trans }}</a>
 
             </div>
@@ -114,7 +114,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-list-json"
                     /*"data": function (d) {
                     }*/
                 },
@@ -166,7 +166,7 @@
                 }, 500);
 
                 $.ajax({
-                    url: '{{app.request.baseUrl}}/plugins/jquery-file-download/jquery.fileDownload.js',
+                    url: '{{app.request_context.baseUrl}}/plugins/jquery-file-download/jquery.fileDownload.js',
                     dataType: 'script',
                     cache: true
                 });
@@ -311,7 +311,7 @@
                     e.stopPropagation();
                     e.preventDefault();
 
-                    $.fileDownload("{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-download-list", {
+                    $.fileDownload("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-download-list", {
                         dialogOptions:{
                             modal: false
                         },
@@ -345,7 +345,7 @@
 
                     $("#modalbox .devoops-modal-bottom").html($("#modal_fileupload_buttons").html());
                     loadFileUploadScripts(function(){});
-                    initFileUploader("{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-upload-list");
+                    initFileUploader("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-upload-list");
                     $("#modalbox").data('complete', 1);
                     $("#modalbox").show();
                 });
@@ -553,7 +553,7 @@
             var current_version = item.current_version;
 
             item.icon = "<img src='" + icon + "' style='background-color: " + backgroundColor + "'>";
-            item.name = '<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-detail?id=' + id + '">' + item.name + '</a>';
+            item.name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-detail?id=' + id + '">' + item.name + '</a>';
             if (!item.current_version) {
                 item.current_version = "{{ 'Undefined'|trans }}"
             }
@@ -563,10 +563,10 @@
             }
 
             if (item.installed) { /* data-info = "1" */
-                item.current_version += ' ' + (item.available_version != '...' && item.available_version != current_version ? '&nbsp;&nbsp;&nbsp;<a class="main_ajax no_context_menu" id="update_app_'+ id + '" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-update"  data-id="' + id + '"><span> {{ 'Update'|trans }} </span></a>' : '');
+                item.current_version += ' ' + (item.available_version != '...' && item.available_version != current_version ? '&nbsp;&nbsp;&nbsp;<a class="main_ajax no_context_menu" id="update_app_'+ id + '" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-update"  data-id="' + id + '"><span> {{ 'Update'|trans }} </span></a>' : '');
                 item.status = item.status == 1 ? "{{ 'Active'|trans }}" : "{{ 'Disabled'|trans }}";
             } else { /*data-info='1'*/
-                item.current_version = "<a class='main_ajax no_context_menu' id='install_app_"+ id +"' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install' data-id='" + id + "' >\n\
+                item.current_version = "<a class='main_ajax no_context_menu' id='install_app_"+ id +"' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install' data-id='" + id + "' >\n\
                                            <span> {{ 'Install'|trans }} </span>\n\
                                         </a>";
                 item.status = "{{ 'Not installed'|trans }}";
@@ -579,38 +579,38 @@
                                     <ul class='dropdown-menu pull-right'>\n";
             if (!item.installed) { /* data-info='1'*/
                 item.operations += "<li>\n\
-                                        <a class='main_ajax no_context_menu' id='install_app_"+ id +"' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install' data-id='" + id + "'>\n\
+                                        <a class='main_ajax no_context_menu' id='install_app_"+ id +"' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install' data-id='" + id + "'>\n\
                                             <span> {{ 'Install'|trans }} </span>\n\
                                         </a>\n\
                                     </li>\n";
             } else {
                 item.operations += "<li>\n\
-                                        <a class='smart-application-toggle-state no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-toggle-state' data-type='" + item.type + "' data-id='" + id + "' data-status='" + (status == '1' ? '0': '1') + "'>\n\
+                                        <a class='smart-application-toggle-state no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-toggle-state' data-type='" + item.type + "' data-id='" + id + "' data-status='" + (status == '1' ? '0': '1') + "'>\n\
                                             <span> " + (status != 1 ? "{{ 'Activate'|trans }}" : "{{ 'Deactivate'|trans }}") + " </span>\n\
                                         </a>\n\
                                     </li>\n";
                 if (status != 1) {
                     item.operations += "<li>\n\
-                                            <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-delete' data-id='" + id + "'>\n\
+                                            <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-delete' data-id='" + id + "'>\n\
                                                 <span> {{ 'Delete'|trans }} </span>\n\
                                             </a>\n\
                                         </li>\n";
                 }
             }
             item.operations += "<li>\n\
-                                    <a class='main_ajax no_context_menu' id='check_update_app_"+ id +"' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-check-update' data-info = '1' data-id='" + id + "'>\n\
+                                    <a class='main_ajax no_context_menu' id='check_update_app_"+ id +"' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-check-update' data-info = '1' data-id='" + id + "'>\n\
                                         <span> {{ 'Checking updates'|trans }} </span>\n\
                                     </a>\n\
                                 </li>\n";
             if (item.installed && item.available_version != '...' && item.available_version != current_version) { /* data-info = '1'*/
                 item.operations += "<li>\n\
-                                        <a class='main_ajax no_context_menu' id='update_app_"+ id +"' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-update'  data-id='" + id + "'>\n\
+                                        <a class='main_ajax no_context_menu' id='update_app_"+ id +"' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-update'  data-id='" + id + "'>\n\
                                             <span> {{ 'Update'|trans }} </span>\n\
                                         </a>\n\
                                     </li>\n";
             }
             item.operations += "<li>\n\
-                                    <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-list-json' data-id='" + id + "' data-alias='" + item.alias + "' data-version='"+ current_version +"'>\n\
+                                    <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-list-json' data-id='" + id + "' data-alias='" + item.alias + "' data-version='"+ current_version +"'>\n\
                                         <span> {{ 'Details'|trans }} </span>\n\
                                     </a>\n\
                                 </li>\n\
@@ -813,7 +813,7 @@
 
     <script type="text/template" id="modal_get_form_body">
         <div class="box-content">
-            <form class="form-horizontal" role="form" id="form_" action="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-get-data-from-repo">
+            <form class="form-horizontal" role="form" id="form_" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-get-data-from-repo">
                 <div class="form-group">
                     <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Package name'|trans }}<span class="icon-required">*</span></label>
                     <div class="col-xs-10 col-sm-8">
@@ -839,7 +839,7 @@
 
     <script type="text/template" id="modal_save_form_body">
         <div class="box-content">
-            <form class="form-horizontal" role="form" id="form_"  action="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-add">
+            <form class="form-horizontal" role="form" id="form_"  action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-add">
                 <div class="form-group">
                     <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Package name'|trans }}</label>
                     <div class="col-xs-10 col-sm-8">
@@ -934,7 +934,7 @@
 
     <script type="text/template" id="modal_info_buttons">
         <div class="pull-right no-padding">
-            <a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install" id="info_apps_action" class="main_ajax btn btn-success pull-right no_context_menu">{{ 'Install'|trans }}</a>
+            <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install" id="info_apps_action" class="main_ajax btn btn-success pull-right no_context_menu">{{ 'Install'|trans }}</a>
             <button type="reset" class="btn btn-default pull-right">{{ 'Close'|trans }}</button>
         </div>
     </script>
@@ -957,7 +957,7 @@
 
     <script type="text/template" id="modal_reset_all_buttons">
         <div class="pull-right no-padding">
-            <a id="reset_all_apps_btn" type="button" class="btn btn-danger pull-right no_context_menu" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/smart-application-reset-all">{{ 'Reset'|trans }}</a>
+            <a id="reset_all_apps_btn" type="button" class="btn btn-danger pull-right no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-reset-all">{{ 'Reset'|trans }}</a>
             <button type="reset" id="reset_all_apps_button" class="btn btn-success pull-right">{{ 'Cancel'|trans }}</button>
         </div>
     </script>

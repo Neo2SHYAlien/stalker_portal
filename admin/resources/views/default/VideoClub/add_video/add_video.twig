@@ -4,7 +4,7 @@
 
 {% block content %}
     <div id="add_channel">
-        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
         <div class="bg-danger">
             <div class="bg-danger">
                 {{ form_errors(app['form']) }}
@@ -92,7 +92,7 @@
                                     {{form_widget(app['form'].cover_big) }}
                                     {{form_widget(app['form'].cover_id) }}
                                     <img class="img-rounded channel-logo" src="{% if app['form'].cover_id.vars.value%}{{app['curr_cover_dir']}}/{{app['form'].cover_id.vars.value}}{% if attribute(app, 'cover_ext') is defined %}{{ app['cover_ext'] }}{% endif %}{% endif %}" alt="" style="max-width: 100%;">
-                                    <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/delete-cover" data-cover_id="{% if app['form'].cover_id.vars.value %}{{app['form'].cover_id.vars.value}}{% endif %}"><span class="txt-primary">{{ 'Delete cover'|trans }}</span></a>
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/delete-cover" data-cover_id="{% if app['form'].cover_id.vars.value %}{{app['form'].cover_id.vars.value}}{% endif %}"><span class="txt-primary">{{ 'Delete cover'|trans }}</span></a>
                                 </div>
                                 <!-- The file upload form used as target for the file upload widget -->
                                 <div id="fileupload" class="pull-left">
@@ -383,7 +383,7 @@
                         <div class="row">
                             <div class=" pull-right">
                                 {{ form_widget(app['form'].save, { 'label': 'Save'|trans, attr: {'class': 'btn btn-success   pull-right'}}) }}
-                                <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/video-list" class="btn btn-default  pull-right"> {{ 'Cancel'|trans }} </a>
+                                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/video-list" class="btn btn-default  pull-right"> {{ 'Cancel'|trans }} </a>
                             </div>
                         </div></div>
                     </div>

@@ -53,7 +53,7 @@
                     for (var i in json.data) {
                         var uid = json.data[i].uid;
                         var mac = json.data[i].mac;
-                        json.data[i].mac = '<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/{{ app.controller_alias }}?uid=' + uid + '" >' + mac + '</a>';
+                        json.data[i].mac = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/{{ app.controller_alias }}?uid=' + uid + '" >' + mac + '</a>';
                         json.data[i].msg = '<div class="event_message">' + json.data[i].msg + '</div>';
                         json.data[i].sended = json.data[i].sended != '0' ? '<span class="">{{ 'Delivered'|trans }}</span>' : '<span class="">{{ 'Not delivered'|trans }}</span>';
                         json.data[i].ended = json.data[i].ended != '0' ? '<span class="">{{ 'Received'|trans }}</span>' : '<span class="">{{ 'Not received'|trans }}</span>';
@@ -73,7 +73,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/events-list-json",
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/events-list-json",
                     "data": function (d) {
                         d = dataTableDataPrepare(d);
 
@@ -115,7 +115,7 @@
                 $(document).on('click', "#clean_events", function (e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    ajaxPostSend("{{app.request.baseUrl}}/{{app.controller_alias}}/clean-events", {uid: $(this).data('uid')});
+                    ajaxPostSend("{{app.request_context.baseUrl}}/{{app.controller_alias}}/clean-events", {uid: $(this).data('uid')});
                     return false;
                 });
 

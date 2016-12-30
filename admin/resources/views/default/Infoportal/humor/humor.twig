@@ -6,7 +6,7 @@
     <div id="iptv_list">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/add-humor-item" class="btn btn-success pull-right no_context_menu" id="add_humor_item">{{ 'Add'|trans }}</a>
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-humor-item" class="btn btn-success pull-right no_context_menu" id="add_humor_item">{{ 'Add'|trans }}</a>
             </div>
         </div>
         <div class="row">
@@ -35,7 +35,7 @@
 
     <div id="modalbox_ad">
         <div class="devoops-modal">
-            <form class="form-horizontal" role="form" id="anek_form" action="{{ app.request.baseUrl }}/{{ app.controller_alias }}/save-humor-item">
+            <form class="form-horizontal" role="form" id="anek_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-humor-item">
                 <div class="devoops-modal-header">
                     <div class="modal-header-name">
                         <span></span>
@@ -130,12 +130,12 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/humor-list-json' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/humor-list-json' data-id='" + id + "'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-humor-item' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-humor-item' data-id='" + id + "'>\n\
                                                                     <span> {{ 'Delete'|trans }} </span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -152,7 +152,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/humor-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/humor-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

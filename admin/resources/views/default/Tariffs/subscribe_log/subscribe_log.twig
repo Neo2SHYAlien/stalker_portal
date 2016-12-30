@@ -57,14 +57,14 @@
                         }
 
                         json.data[i]['state'] = json.data[i]['state'] ? '{{ app.allPackageStates[1].title }}': '{{ app.allPackageStates[0].title }}';
-                        json.data[i]['mac'] = '<a href="{{ app.request.baseUrl }}/users/edit-users?id=' + json.data[i]['user_id'] + '">'+ json.data[i]['mac'] +'</a>';
+                        json.data[i]['mac'] = '<a href="{{ app.request_context.baseUrl }}/users/edit-users?id=' + json.data[i]['user_id'] + '">'+ json.data[i]['mac'] +'</a>';
                     }
                 }
             }).dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/subscribe-log-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/subscribe-log-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

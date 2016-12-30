@@ -81,7 +81,7 @@
                         var id = json.data[i].id;
                         var state = json.data[i].state;
                         var name = json.data[i].name;
-                        json.data[i].name = '<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' + name + '</a>';
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' + name + '</a>';
                         
                         json.data[i].state = '<span class="txt-' + taskStateColor[state] + '">'+taskState[state]+'</span>';
                         if (json.data[i].archived != '0'){
@@ -107,7 +107,7 @@
                 "processing": true,   
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/tasks-report-json",
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/tasks-report-json",
                     "data": function (d) {
                         var table = $('#datatable-1').DataTable();
                         var DT_qString = table.ajax.url();

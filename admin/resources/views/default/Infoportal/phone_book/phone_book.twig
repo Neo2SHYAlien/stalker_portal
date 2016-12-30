@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 {{ main_macro.get_filter_button_bar('service', 'id', 'title', app['allServices']) }}
-                <a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/add-phone-book-item" class="btn btn-success pull-right no_context_menu" id="add_phone_book_item">{{ 'Add'|trans }}</a>
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-phone-book-item" class="btn btn-success pull-right no_context_menu" id="add_phone_book_item">{{ 'Add'|trans }}</a>
             </div>
         </div>
 
@@ -47,7 +47,7 @@
                     </a>
                 </div>
             </div>
-            <form class="form-horizontal" role="form" id="karaoke_form" action="{{ app.request.baseUrl }}/{{ app.controller_alias }}/save-phone-book-item">
+            <form class="form-horizontal" role="form" id="karaoke_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-phone-book-item">
             <div class="devoops-modal-inner">
                 <div class="box">
                     <div class="box-content">
@@ -148,18 +148,18 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/phone-book-list-json' data-id='" + id + "' data-phoneboocksource='{{ app['filters']['service'] }}'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/phone-book-list-json' data-id='" + id + "' data-phoneboocksource='{{ app['filters']['service'] }}'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-phone-book-item' data-id='" + id + "' data-phoneboocksource='{{ app['filters']['service'] }}'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-phone-book-item' data-id='" + id + "' data-phoneboocksource='{{ app['filters']['service'] }}'>\n\
                                                                     <span> {{ 'Delete'|trans }} </span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                         </ul>\n\
                                                     </div>";
-                        json.data[i].title = '<a class="main_ajax no_context_menu" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/phone-book-list-json" data-id="' + id + '" data-phoneboocksource="{{ app['filters']['service'] }}">' + title + '</a>';
+                        json.data[i].title = '<a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/phone-book-list-json" data-id="' + id + '" data-phoneboocksource="{{ app['filters']['service'] }}">' + title + '</a>';
 
                     }
                 }
@@ -167,7 +167,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/phone-book-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/phone-book-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

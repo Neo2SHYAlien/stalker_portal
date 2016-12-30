@@ -8,7 +8,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 {{ main_macro.get_filter('status_id', 'Status'|trans, 'id', 'title', app['allStatus']) }}
                 {{ main_macro.get_filter('monitoring_status', 'Monitoring status'|trans, 'id', 'title', app['allMonitoringStatus'], 2) }}
-                <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/add-radio" class="btn btn-success pull-right">{{ 'Add radio'|trans }}</a>
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-radio" class="btn btn-success pull-right">{{ 'Add radio'|trans }}</a>
             </div>
         </div>
 
@@ -49,17 +49,17 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/edit-radio?id=" + id + "'>\n\
+                                                                <a href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-radio?id=" + id + "'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/toggle-radio' data-radioid='" + id + "' data-radiostatus='" + status + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-radio' data-radioid='" + id + "' data-radiostatus='" + status + "'>\n\
                                                                     <span>" + (status != 0 ? "{{ 'Unpublish'|trans }}" : "{{ 'Publish'|trans }}") + "</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-radio' data-radioid='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-radio' data-radioid='" + id + "'>\n\
                                                                     <span>{{ 'Delete'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -69,14 +69,14 @@
                         json.data[i].volume_correction *= 5;
                         var name = json.data[i].name;
 
-                        json.data[i].name = '<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/edit-radio?id=' + id + '" >' + name + '</a>';
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-radio?id=' + id + '" >' + name + '</a>';
                     }
                 }
             }).dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/radio-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/radio-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

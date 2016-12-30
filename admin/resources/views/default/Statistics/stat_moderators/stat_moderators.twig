@@ -71,7 +71,7 @@
                         var id = json.data[i].id;
                         var state = json.data[i].state;
                         var name = json.data[i].name;
-                        json.data[i].name = '<a href="{{ app.request.baseUrl }}/tasks/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' + name + '</a>';
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/tasks/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' + name + '</a>';
                         
                         json.data[i].state = '<span class="txt-' + taskStateColor[state] + '">'+taskState[state]+'</span>';
                         if (json.data[i].archived != '0'){
@@ -101,7 +101,7 @@
                 "processing": true,   
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/stat-moderators-list-json",
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/stat-moderators-list-json",
                     "data": function (d) {
                         d = dataTableDataPrepare(d);
                         $('input[id^="datepicker_"]').each(function () {

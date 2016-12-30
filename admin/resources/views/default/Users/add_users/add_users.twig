@@ -6,7 +6,7 @@
 {% block content %}
     {% if app.resellerUserLimit %}
         <div id="add_channel">
-            {{ form_start(app['form'], {'method': 'POST', 'action': (app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+            {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
             <div class="bg-danger">
                 <div class="bg-danger">
                     {{ form_errors(app['form']) }}
@@ -222,7 +222,7 @@
                                         {% endif %}
                                     </div>
                                 {% if app.userEdit %}
-                                    <a class="btn btn-default" id="tv_subscription"  href="{{app.request.baseUrl}}/{{app.controller_alias}}/get-subscribed-tv" data-user_id="{{ app['form'].id.vars.value }}">{{ 'User subscription on tv-channels'|trans }}{# ({{ app.channelsCost }})#}</a>
+                                    <a class="btn btn-default" id="tv_subscription"  href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/get-subscribed-tv" data-user_id="{{ app['form'].id.vars.value }}">{{ 'User subscription on tv-channels'|trans }}{# ({{ app.channelsCost }})#}</a>
                                 {% endif %}
                                 </div>
                             </div>
@@ -288,7 +288,7 @@
                                         {{ form_widget(app['form'].parent_password, {'attr': {'class': 'form-control'}}) }}
                                     </div>
                                     <div class=" col-xs-10 col-sm-6">
-                                        <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/reset-users-parent-password" data-userid = "{{ app.userID }}" class="btn btn-info pull-left main_ajax">{{ 'Reset'|trans }}</a>
+                                        <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/reset-users-parent-password" data-userid = "{{ app.userID }}" class="btn btn-info pull-left main_ajax">{{ 'Reset'|trans }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -299,7 +299,7 @@
                                         {{ form_widget(app['form'].settings_password, {'attr': {'class': 'form-control'}}) }}
                                     </div>
                                     <div class=" col-xs-10 col-sm-6">
-                                        <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/reset-users-settings-password" data-userid = "{{ app.userID }}" class="btn btn-info pull-left main_ajax">{{ 'Reset'|trans }}</a>
+                                        <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/reset-users-settings-password" data-userid = "{{ app.userID }}" class="btn btn-info pull-left main_ajax">{{ 'Reset'|trans }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -310,7 +310,7 @@
                                         {{ form_widget(app['form'].fav_itv, {'attr': {'class': 'form-control'}}) }}
                                     </div>
                                     <div class=" col-xs-10 col-sm-6">
-                                        <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/reset-user-fav-tv" class="btn btn-info pull-left main_ajax" data-userid = "{{ app.userID }}">{{ 'Reset'|trans }}</a>
+                                        <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/reset-user-fav-tv" class="btn btn-info pull-left main_ajax" data-userid = "{{ app.userID }}">{{ 'Reset'|trans }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -352,10 +352,10 @@
                                             {{ form_errors(app['form']['tariff_plan_id']) }}
                                         </div>
                                     </div>
-                                    <a class="btn btn-default pull-right" href="{{app.request.baseUrl}}/tariffs/subscribe-log?user_id={{ app['form'].id.vars.value }}">{{ 'Subscribe log'|trans }}</a>
+                                    <a class="btn btn-default pull-right" href="{{app.request_context.baseUrl}}/tariffs/subscribe-log?user_id={{ app['form'].id.vars.value }}">{{ 'Subscribe log'|trans }}</a>
                                     {% if app['tariffPlanSubscriptionFlag'] %}
                                         <span class="col-sm-1  pull-right">&nbsp;</span>
-                                        <a class="btn btn-default pull-right" id="tv_subscription"  href="{{app.request.baseUrl}}/{{app.controller_alias}}/get-subscribed-tv" data-user_id="{{ app['form'].id.vars.value }}">{{ 'User subscription on tv-channels'|trans }}{# ({{ app.channelsCost }})#}</a>
+                                        <a class="btn btn-default pull-right" id="tv_subscription"  href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/get-subscribed-tv" data-user_id="{{ app['form'].id.vars.value }}">{{ 'User subscription on tv-channels'|trans }}{# ({{ app.channelsCost }})#}</a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -376,7 +376,7 @@
                                                 {% for item in app['userTPs'] %}
                                                     <tr>
                                                         <td>
-                                                            <label><a href="{{ app.request.baseUrl }}/tariffs/edit-service-package?id={{ item.services_package_id }}" data-placement="bottom" data-toggle="tooltip" data-original-title="{{ item.description }}">{{ item.name }}</a></label>
+                                                            <label><a href="{{ app.request_context.baseUrl }}/tariffs/edit-service-package?id={{ item.services_package_id }}" data-placement="bottom" data-toggle="tooltip" data-original-title="{{ item.description }}">{{ item.name }}</a></label>
                                                         </td>
                                                         <td>
                                                             <label>
@@ -475,7 +475,7 @@
                             <div class="row">
                                 <div class="pull-right">
                                     {{ form_widget(app['form'].save, { 'label': 'Save'|trans , attr: {'class': 'btn btn-success  pull-right'}}) }}
-                                    <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/users-list" class="btn btn-default pull-right">{{ 'Cancel'|trans }}</a>
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/users-list" class="btn btn-default pull-right">{{ 'Cancel'|trans }}</a>
                                 </div>
                             </div>
                         </div>
@@ -501,7 +501,7 @@
                         </a>
                     </div>
                 </div>
-                <form class="form-horizontal" role="form" action="{{app.request.baseUrl}}/{{app.controller_alias}}/save-subscribed-tv">
+                <form class="form-horizontal" role="form" action="{{app.request_context.baseUrl}}/{{app.controller_alias}}/save-subscribed-tv">
                     <div class="devoops-modal-inner">
                         <div class="box">
                             <div class="box-content" >
@@ -649,7 +649,7 @@
 
                     var sendData = {login: _this.val(), id: $("#form_id").val()};
 
-                    ajaxPostSend('{{app.request.baseUrl}}/{{app.controller_alias}}/check-login', sendData);
+                    ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/check-login', sendData);
                 });
 
                 $(document).on('click', "a.main_ajax", function (e) {

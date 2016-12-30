@@ -46,13 +46,13 @@ class BaseStalkerController {
 
     public function __construct(Application $app, $modelName = '') {
         $this->app = $app;
-        $this->request = $app['request'];
+        $this->request = $app['request_stack']->getCurrentRequest();
 
         if (session_id()) {
             session_write_close();
-            $this->app['request']->getSession()->save();
+            $this->app['session']->save();
         }
-        $this->app['request']->getSession()->start();
+        $this->app['session']->start();
         $this->admin = \Admin::getInstance();
 
         $this->app['userlogin'] = $this->admin->getLogin();
@@ -113,7 +113,7 @@ class BaseStalkerController {
             $this->setSideBarMenu();
             $this->setTopBarMenu();
             $this->setBreadcrumbs();
-            $this->app['request']->getSession()->set('cached_lang', $this->app['language']);
+            $this->app['session']->set('cached_lang', $this->app['language']);
             if ($this->admin->getTheme()) {
                 $twig_theme = $this->admin->getTheme();
             } elseif(!empty($this->app["themes"])){
@@ -149,7 +149,7 @@ class BaseStalkerController {
         $this->workHost = $this->baseHost . Config::getSafe('portal_url', '/stalker_portal/');
         $this->app['relativePath'] = $this->relativePath = Config::getSafe('portal_url', '/stalker_portal/');
         $this->app['workHost'] = $this->workHost;
-        $this->Uri = $this->app['request']->getUri();
+        $this->Uri = $this->app['request_stack']->getCurrentRequest()->getUri();
         $controller = (!empty($this->app['controller_alias']) ? "/" . $this->app['controller_alias'] : '');
         $action = (!empty($this->app['action_alias']) ? "/" . $this->app['action_alias'] : '');
         $workUrl = explode("?", str_replace(array($action, $controller), '', $this->Uri));
@@ -604,7 +604,7 @@ class BaseStalkerController {
     }
 
     private function checkCachedMenu($menu_name) {
-        $cached_lang = $this->app['request']->getSession()->get('cached_lang', '');
+        $cached_lang = $this->app['session']->get('cached_lang', '');
         return !$this->isCacheTimeOut($menu_name) && $cached_lang == $this->app['language'] ? $this->getCachedMenu($menu_name) : FALSE;
     }
 
@@ -618,7 +618,7 @@ class BaseStalkerController {
                     @unlink($cached_file_name);
                 }
                 $this->app[$is_cached_field] = time();
-                $this->app['request']->getSession()->set($is_cached_field, $this->app[$is_cached_field]);
+                $this->app['session']->set($is_cached_field, $this->app[$is_cached_field]);
                 file_put_contents($dir . '/' . $this->app[$is_cached_field] . '_' . $this->app['user_id'] . '.' . $menu_name, serialize($this->app[$menu_name]));
             }
         }
@@ -626,7 +626,7 @@ class BaseStalkerController {
 
     private function isCacheTimeOut($field_name) {
         $is_cached_field = $field_name . '_last_cached';
-        $this->app[$is_cached_field] = $this->app['request']->getSession()->get($is_cached_field, 0);
+        $this->app[$is_cached_field] = $this->app['session']->get($is_cached_field, 0);
         return empty($this->app[$is_cached_field]) || (time() - ((int)$this->app[$is_cached_field] + $this->sidebar_cache_time)) > 0;
     }
 

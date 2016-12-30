@@ -8,13 +8,13 @@
         <div class="row">
            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="pull-right">
-                    <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/add-epg-item" class="btn btn-success  pull-right no_context_menu" id="add_epg_item">{{ 'Add EPG'|trans }}</a>
+                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-epg-item" class="btn btn-success  pull-right no_context_menu" id="add_epg_item">{{ 'Add EPG'|trans }}</a>
                 </div>
                 <div class="pull-right">
-                    <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/update-epg" class="btn btn-default pull-right main_ajax no_context_menu" data-id="all">{{ 'Update EPG'|trans }}</a>
+                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/update-epg" class="btn btn-default pull-right main_ajax no_context_menu" data-id="all">{{ 'Update EPG'|trans }}</a>
                 </div>
                 <div class="pull-right">
-                    <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/update-epg" class="btn btn-default pull-right main_ajax no_context_menu" data-id="all" data-force="1">{{ 'Force update of EPG'|trans }}</a>
+                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/update-epg" class="btn btn-default pull-right main_ajax no_context_menu" data-id="all" data-force="1">{{ 'Force update of EPG'|trans }}</a>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                     </a>
                 </div>
             </div>
-            <form class="form-horizontal" role="form" id="epg_form" action="{{ app.request.baseUrl }}/{{ app.controller_alias }}/save-epg-item">
+            <form class="form-horizontal" role="form" id="epg_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-epg-item">
                 <div class="devoops-modal-inner">
                     <div class="box">
                         <div class="box-content">
@@ -187,17 +187,17 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/epg-list-json' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-list-json' data-id='" + id + "'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/toggle-epg-item-status' data-id='" + id + "' data-status='" + status + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-epg-item-status' data-id='" + id + "' data-status='" + status + "'>\n\
                                                                     <span>" + (status == 1? '<span>{{ 'Unpublish'|trans }}</span>':'<span>{{ 'Publish'|trans }}</span>') + "</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-epg-item' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-epg-item' data-id='" + id + "'>\n\
                                                                     <span> {{ 'Delete'|trans }} </span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -214,7 +214,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/epg-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"
@@ -324,7 +324,7 @@
                     _this.closest('form').find('[type="submit"]').prop('disabled', false);
 
                     if (_this.val()) {
-                        ajaxPostSend("{{ app.request.baseUrl }}/{{ app.controller_alias }}/epg-check-uri", {param: _this.val(), epgid: $('#form_id').val()});
+                        ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-check-uri", {param: _this.val(), epgid: $('#form_id').val()});
                     }
                 });
 
@@ -334,7 +334,7 @@
                     _this.closest('form').find('[type="submit"]').prop('disabled', false);
 
                     if (_this.val()) {
-                        ajaxPostSend("{{ app.request.baseUrl }}/{{ app.controller_alias }}/epg-check-prefix", {epg_id: $("#form_id").val(), prefix: _this.val()});
+                        ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-check-prefix", {epg_id: $("#form_id").val(), prefix: _this.val()});
                     }
 
                 });

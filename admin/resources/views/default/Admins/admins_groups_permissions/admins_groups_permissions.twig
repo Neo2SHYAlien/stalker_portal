@@ -135,7 +135,7 @@
                             <div class="row">
                                 <div class=" pull-right">
                                     <button id="save_button" type="submit" class="btn btn-success pull-right">{{ 'Save'|trans }}</button>
-                                    <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/admins-list" class="btn btn-default pull-right"> {{ 'Cancel'|trans }} </a>
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/admins-list" class="btn btn-default pull-right"> {{ 'Cancel'|trans }} </a>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +202,7 @@
                             }
                         });
                     });
-                    ajaxPostSend('{{app.request.baseUrl}}/{{app.controller_alias}}/save-admins-group-permissions', {data: JSON.stringify(sendData)}, false, true);
+                    ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/save-admins-group-permissions', {data: JSON.stringify(sendData)}, false, true);
                 })
             });
         }

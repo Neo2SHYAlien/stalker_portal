@@ -125,10 +125,10 @@ class TvChannelsController extends \Controller\BaseStalkerController {
             return $no_auth;
         }
 
-        $this->app['not_found'] = $this->app['request']->getSession()->get('channel_error');
+        $this->app['not_found'] = $this->app['session']->get('channel_error');
 
         if (!empty($this->app['not_found'])) {
-            $this->app['request']->getSession()->remove('channel_error');
+            $this->app['session']->remove('channel_error');
         }
 
         $this->app['enable_tariff_plans'] = Config::getSafe('enable_tariff_plans', false);
@@ -160,7 +160,7 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         $this->app['channelEdit'] = TRUE;
         $this->oneChannel = $this->db->getChannelById($id);
         if (empty($this->oneChannel)) {
-            $this->app['request']->getSession()->set('channel_error', TRUE);
+            $this->app['session']->set('channel_error', TRUE);
             return $this->app->redirect('add-channel');
         }
 

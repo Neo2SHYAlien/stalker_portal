@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 {{ main_macro.get_filter('status', 'Status'|trans, 'id', 'title', app['allServerStatus'], 2) }}
-                <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/broadcast-servers-list-json" class="main_ajax btn btn-success pull-right no_context_menu" id="add_server">{{ 'Add server'|trans }}</a>
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/broadcast-servers-list-json" class="main_ajax btn btn-success pull-right no_context_menu" id="add_server">{{ 'Add server'|trans }}</a>
             </div>
         </div>
 
@@ -49,7 +49,7 @@
                     </a>
                 </div>
             </div>
-            <form class="form-horizontal" role="form" id="karaoke_form" action="{{ app.request.baseUrl }}/{{ app.controller_alias }}/save-server">
+            <form class="form-horizontal" role="form" id="karaoke_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-server">
                 <div class="devoops-modal-inner">
                     <div class="box">
                         <div class="box-content">
@@ -174,17 +174,17 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/toggle-server-status' data-id='" + id + "' data-status='" + status + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-server-status' data-id='" + id + "' data-status='" + status + "'>\n\
                                                                     <span>" + (status == 1 ? "{{ 'Switch off'|trans }}" : "{{ 'Switch on'|trans }}") +"</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/broadcast-servers-list-json' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/broadcast-servers-list-json' data-id='" + id + "'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-server' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-server' data-id='" + id + "'>\n\
                                                                     <span> {{ 'Delete'|trans }} </span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -198,7 +198,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/broadcast-servers-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/broadcast-servers-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

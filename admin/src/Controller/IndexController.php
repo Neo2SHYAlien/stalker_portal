@@ -342,7 +342,7 @@ class IndexController extends \Controller\BaseStalkerController {
         $data = array();
         $data['action'] = 'setOpinionModal';
         $error = '';
-        $data['remind'] = $this->app['request']->getSession()->get('remind', FALSE);
+        $data['remind'] = $this->app['session']->get('remind', FALSE);
 
         if ($this->admin->isSuperUser() && (is_null($this->admin->getOpinionFormFlag()) || $this->admin->getOpinionFormFlag() == 'remind')) {
             $data['link'] = $this->app['language'] == 'ru' ? 'https://goo.gl/forms/2bZsWJ06feIas5Aa2': 'https://goo.gl/forms/AQx9JhtJ9FYaBEJa2';
@@ -371,7 +371,7 @@ class IndexController extends \Controller\BaseStalkerController {
         $error = '';
 
         $this->db->getOpinionFormFlag($this->postData['opinion']);
-        $this->app['request']->getSession()->set('remind', TRUE);
+        $this->app['session']->set('remind', TRUE);
 
         $response = $this->generateAjaxResponse($data, $error);
 

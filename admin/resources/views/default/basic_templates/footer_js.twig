@@ -2,45 +2,45 @@
 {# empty Twig template #}
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <!--<script src="//code.jquery.com/jquery.js"></script>-->
-        <script src="{{app.request.baseUrl}}/plugins/jquery/jquery-2.1.0.min.js"></script>
-		 <script src="{{app.request.baseUrl}}/plugins/noty/packaged/jquery.noty.packaged.js"></script>
-        <script src="{{app.request.baseUrl}}/js/jquery.cookies.2.2.0.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-ui/jquery-ui.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery/jquery-2.1.0.min.js"></script>
+		 <script src="{{app.request_context.baseUrl}}/plugins/noty/packaged/jquery.noty.packaged.js"></script>
+        <script src="{{app.request_context.baseUrl}}/js/jquery.cookies.2.2.0.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-ui/jquery-ui.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="{{app.request.baseUrl}}/plugins/bootstrap/bootstrap.min.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/bootstrap/bootstrap.min.js"></script>
         <script src="{{app.relativePath}}c/version.js{% if attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
         <!-- All functions for this theme + document.ready processing -->
-        <script src="{{app.request.baseUrl}}/plugins/form-validator/jquery.form-validator.min.js"></script>
-        <script src="{{app.request.baseUrl}}/js/devoops.js{% if attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
-        <script src="{{app.request.baseUrl}}/plugins/multiselect_transfer/jquery.selso.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/form-validator/jquery.form-validator.min.js"></script>
+        <script src="{{app.request_context.baseUrl}}/js/devoops.js{% if attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/multiselect_transfer/jquery.selso.js"></script>
 
-        <script src="{{app.request.baseUrl}}/plugins/datatables/jquery.dataTables.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/datatables/ZeroClipboard.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/datatables/TableTools.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/datatables/fnReloadAjax.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/datatables/dataTables.bootstrap.js?{#ver={{ random() }}#}{% if 0 and attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
-        <script src="{{app.request.baseUrl}}/plugins/datatables/jquery.dataTables.rowReordering.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/jquery.dataTables.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/ZeroClipboard.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/TableTools.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/fnReloadAjax.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/dataTables.bootstrap.js?{#ver={{ random() }}#}{% if 0 and attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/jquery.dataTables.rowReordering.js"></script>
 
-        <script src="{{app.request.baseUrl}}/plugins/select2/select2.full.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/select2/i18n/{% if app["language"] %}{{ app["language"] }}{% else %}en{% endif %}.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/select2/select2.full.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/select2/i18n/{% if app["language"] %}{{ app["language"] }}{% else %}en{% endif %}.js"></script>
 
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/load-image.all.min.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/canvas-to-blob.min.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.blueimp-gallery.min.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.iframe-transport.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-process.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-image.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-validate.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-jquery-ui.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/jquery-file-upload/js/cors/jquery.xdr-transport.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/load-image.all.min.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/canvas-to-blob.min.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.blueimp-gallery.min.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-process.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-image.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-validate.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/jquery.fileupload-jquery-ui.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-file-upload/js/cors/jquery.xdr-transport.js"></script>
 
         <script src='//www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart"],"callback":"load_page_data"}]}'></script>
 
-        <script src="{{app.request.baseUrl}}/plugins/flot/jquery.flot.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/flot/jquery.flot.time.js"></script>
-        <script src="{{app.request.baseUrl}}/plugins/flot/jquery.flot.navigate.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/flot/jquery.flot.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/flot/jquery.flot.time.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/flot/jquery.flot.navigate.js"></script>
 
 <footer>
     <div class="text">
@@ -159,11 +159,11 @@
                         <div class='row'>\n\
                             <div class='col-xs-6 col-xs-offset-3'>\n\
                                 <h4 class='text-center'>\n\
-                                    <img src='{{app.request.baseUrl}}/img/warning-icon.png'/>\n\
+                                    <img src='{{app.request_context.baseUrl}}/img/warning-icon.png'/>\n\
                                     &nbsp;&nbsp;\n\
                                     <strong>{{ 'Reminder: One of your certificates is expiring'|trans }}</strong>\n\
                                     &nbsp;&nbsp;\n\
-                                    <small><a href='{{app.request.baseUrl}}/certificates/current' class='txt-primary'>{{ 'Details'|trans }}</a></small>\n\
+                                    <small><a href='{{app.request_context.baseUrl}}/certificates/current' class='txt-primary'>{{ 'Details'|trans }}</a></small>\n\
                                 </h4>\n\
                             </div>\n\
                             <div id='warn_close' class='col-xs-1 txt-center pull-right'>\n\
@@ -207,7 +207,7 @@
             }
             var cTime = new Date();
             if ((cTime.getTime() - certificateCheck.timestamp) > 86400000 ) {
-                ajaxPostSend('{{app.request.baseUrl}}/certificates/current-list-json', {notty_check: 1}, false, false, true);
+                ajaxPostSend('{{app.request_context.baseUrl}}/certificates/current-list-json', {notty_check: 1}, false, false, true);
             } else if (!certificateCheck.closed){
                 createCertModal();
             }
@@ -215,7 +215,7 @@
             {% if attribute(app, 'userlogin') is defined and app['userlogin'] == 'admin' %}
             var opinionCheck = localStorage.getItem('opinionCheck');
             if (!opinionCheck) {
-                ajaxPostSend('{{app.request.baseUrl}}/index/opinion-check', false, false, true);
+                ajaxPostSend('{{app.request_context.baseUrl}}/index/opinion-check', false, false, true);
             } else {
                 setOpinionModal(JSON.parse(opinionCheck));
             }
@@ -240,7 +240,7 @@
                 $("#opinion_fill").attr('href', data.link);
                 $("#modalbox").on('click', '.devoops-modal-bottom a', function(e){
                     JScloseModalBox();
-                    ajaxPostSend('{{app.request.baseUrl}}/index/opinion-set', $(this).data(), false, false, true);
+                    ajaxPostSend('{{app.request_context.baseUrl}}/index/opinion-set', $(this).data(), false, false, true);
                     if ($(this).hasClass('main_ajax')) {
                         e.stopPropagation();
                         e.preventDefault();
@@ -265,7 +265,7 @@
 
             <script type="text/template" id="opinion_modal_body_template">
                 <div class="col-sm-4" style="margin: 0 !important; padding: 10px 20px !important;">
-                    <img src="{{app.request.baseUrl}}/img/foto_sazhienko.jpg" class="img-thumbnail">
+                    <img src="{{app.request_context.baseUrl}}/img/foto_sazhienko.jpg" class="img-thumbnail">
                 </div>
                 <div class="col-sm-8 opinion_form opinion_form">
                     <h4>{{ 'Dear user!'|trans }}</h4>

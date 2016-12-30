@@ -7,7 +7,7 @@
     <div id="iptv_list">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <a href="{{app.request.baseUrl}}/{{app.controller_alias}}/add-audio-years" class="btn btn-success pull-right no_context_menu" id="add_audio_years">{{ 'Add year'|trans }}</a>
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-audio-years" class="btn btn-success pull-right no_context_menu" id="add_audio_years">{{ 'Add year'|trans }}</a>
             </div>
         </div>
 
@@ -48,7 +48,7 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a class='no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/edit-audio-years' data-yearsid='" + id + "' id='edit_audio_years_" + id + "'>\n\
+                                                                <a class='no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-audio-years' data-yearsid='" + id + "' id='edit_audio_years_" + id + "'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -61,7 +61,7 @@
                                                     </div>";
                         var name = json.data[i].name;
 
-                        json.data[i].name = '<a class="no_context_menu" href="{{ app.request.baseUrl }}/{{ app.controller_alias }}/edit-audio-years" data-yearsid="' + id + '" id="edit_audio_years_' + id + '">' + name + '</a>';
+                        json.data[i].name = '<a class="no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-audio-years" data-yearsid="' + id + '" id="edit_audio_years_' + id + '">' + name + '</a>';
                     }
                 }
             }).dataTable({
@@ -69,7 +69,7 @@
                 "serverSide": true,
                 "pageLength": 50,
                 "ajax": {
-                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/audio-years-list-json"
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-years-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"
@@ -104,7 +104,7 @@
                         name: _this.val()
                     };
 
-                    ajaxPostSend('{{app.request.baseUrl}}/{{app.controller_alias}}/check-audio-years-name', sendData);
+                    ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/check-audio-years-name', sendData);
                     return false;
                 });
 
@@ -237,7 +237,7 @@
 
     <script type="text/template" id="modal_del_buttons">
         <div class="pull-right no-padding">
-            <a id="del_year_btn" type="button" class="main_ajax btn btn-danger pull-right no_context_menu" href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-audio-years'>{{ 'Delete'|trans }}</a>
+            <a id="del_year_btn" type="button" class="main_ajax btn btn-danger pull-right no_context_menu" href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-audio-years'>{{ 'Delete'|trans }}</a>
             <button type="reset" id="del_year_button" class="btn btn-success pull-right">{{ 'Cancel'|trans }}</button>
         </div>
     </script>
