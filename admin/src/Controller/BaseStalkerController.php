@@ -53,6 +53,7 @@ class BaseStalkerController {
             $this->app['session']->save();
         }
         $this->app['session']->start();
+        \Admin::checkLanguage($app['language']);
         $this->admin = \Admin::getInstance();
 
         $this->app['userlogin'] = $this->admin->getLogin();
@@ -573,6 +574,8 @@ class BaseStalkerController {
                 $parent_access = $this->app['controllerAccessMap'][$this->app['controller_alias']]['action'][$parent_1]['access'];
             } elseif (array_key_exists($parent_2, $this->app['controllerAccessMap'][$this->app['controller_alias']]['action'])) {
                 $parent_access = $this->app['controllerAccessMap'][$this->app['controller_alias']]['action'][$parent_2]['access'];
+            } elseif (array_key_exists($action_alias, $this->app['controllerAccessMap'][$this->app['controller_alias']]['action'])) {
+                $parent_access = $this->app['controllerAccessMap'][$this->app['controller_alias']]['action'][$action_alias]['access'];
             }
             $return = (int)($parent_access > 0);
         }
