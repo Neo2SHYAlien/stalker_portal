@@ -45,6 +45,8 @@ class BaseStalkerController {
     protected $redirect = FALSE;
 
     public function __construct(Application $app, $modelName = '') {
+        $getenv = getenv('STALKER_ENV');
+        ini_set('memory_limit', '256M');
         $this->app = $app;
         $this->request = $app['request_stack']->getCurrentRequest();
 
@@ -55,6 +57,17 @@ class BaseStalkerController {
         $this->app['session']->start();
         \Admin::checkLanguage($app['language']);
         $this->admin = \Admin::getInstance();
+
+        if ($this->admin->getTheme()) {
+            $twig_theme = $this->admin->getTheme();
+        } elseif(!empty($this->app["themes"])){
+            $themes = $this->app["themes"];
+            reset($themes);
+            $twig_theme = key($themes);
+        } else {
+            $twig_theme = 'default';
+        }
+        $this->app['twig_theme'] = $twig_theme;
 
         $this->app['userlogin'] = $this->admin->getLogin();
 
@@ -115,16 +128,6 @@ class BaseStalkerController {
             $this->setTopBarMenu();
             $this->setBreadcrumbs();
             $this->app['session']->set('cached_lang', $this->app['language']);
-            if ($this->admin->getTheme()) {
-                $twig_theme = $this->admin->getTheme();
-            } elseif(!empty($this->app["themes"])){
-                $themes = $this->app["themes"];
-                reset($themes);
-                $twig_theme = key($themes);
-            } else {
-                $twig_theme = 'default';
-            }
-            $this->app['twig_theme'] = $twig_theme;
         }
 
         if (isset($this->data['set-dropdown-attribute'])) {
@@ -144,10 +147,24 @@ class BaseStalkerController {
         $this->app['controller_alias'] = $tmp[0];
         $this->app['action_alias'] = (count($tmp) == 2) ? $tmp[1] : '';
         $getenv = getenv('STALKER_ENV');
-        $ext_path = (!empty($tmp[0]) ? ucfirst($tmp[0]): 'Index') . '/' . (!empty($tmp[1]) ? $tmp[1]: 'index') . '/';
-        if (!$getenv) {
-            $ext_path = strtolower(str_replace('/', '_', $ext_path));
-        }
+        $ext_path = (!empty($tmp[0]) ? implode('', array_map('ucfirst', explode('-', $tmp[0]))): 'Index') . '/' . (!empty($tmp[1]) ? str_replace('-', '_', $tmp[1]): 'index') . '/';
+
+        $min_ext_script_path = 'min/'. $this->app['twig_theme'] . '/' . strtolower(str_replace('/', '_', trim($ext_path, '/')));
+
+/*        $this->app['twig']->loadFromExtension('assetic', array(
+            'write_to' => $min_ext_script_path,
+        ));*/
+
+        /*$app['assetic.asset_manager']->set()*/
+
+        $this->app['assetic.path_to_web'] = $min_ext_script_path;
+
+        /*print_r($this->app['assetic.path_to_web']); exit;*/
+
+        /*$this->app->extend('assetic', function($assetic, $app){
+            'write_to' => $min_ext_script_path,
+        });*/
+
         $this->app['ext_script_path'] = '/' . $ext_path;
         $this->app['stalker_env'] = ($getenv && $getenv == 'develop') ? 'dev': 'min';
         $this->baseHost = $this->request->getSchemeAndHttpHost();

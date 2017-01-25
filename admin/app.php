@@ -137,7 +137,7 @@ $app->register(new SilexAssetic\AsseticServiceProvider(),
     array(
         'assetic.path_to_web' => __DIR__ . '/../server/adm',
         'assetic.options' => array(
-            'auto_dump_assets' => $auto_dump_assets,                        // ручное управление минимизацией на лету true - включить, false - отключить
+            'auto_dump_assets' => true,//$auto_dump_assets,                        // ручное управление минимизацией на лету true - включить, false - отключить
             'debug' => false
         ),
         'assetic.filters' => $app->protect(function($fm) {

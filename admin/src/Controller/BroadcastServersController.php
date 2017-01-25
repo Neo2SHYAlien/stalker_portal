@@ -488,7 +488,7 @@ class BroadcastServersController extends \Controller\BaseStalkerController {
         $disabled_countries["0"] = '';
         $countries["0"] = '';
 
-        $form = $builder->createBuilder('form', $data, array('csrf_protection' => false))
+        $form = $builder->createBuilder('form', $data)
                 ->add('id', 'hidden')
                 ->add('name', 'text', array(
                     'constraints' => new Assert\NotBlank(),

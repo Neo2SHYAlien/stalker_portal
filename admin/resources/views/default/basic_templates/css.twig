@@ -1,7 +1,7 @@
 {# empty Twig template #}
 
-{% stylesheets 'css/*.css' filter="yui_css" output='css/min/libraries.css' %}
-<link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
+{% stylesheets 'css/style.css' filter="yui_css" output='../libraries.css' %}
+<link href="{{ app.request_context.baseUrl }}/{{ app['assetic.path_to_web'] }}../libraries.css'" type="text/css" rel="stylesheet" />
 {% endstylesheets %}
 
         <link href="{{ app.request_context.baseUrl }}/plugins/bootstrap/bootstrap.css" rel="stylesheet">
