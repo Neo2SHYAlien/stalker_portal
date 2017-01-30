@@ -45,8 +45,7 @@ class BaseStalkerController {
     protected $redirect = FALSE;
 
     public function __construct(Application $app, $modelName = '') {
-        $getenv = getenv('STALKER_ENV');
-        ini_set('memory_limit', '256M');
+
         $this->app = $app;
         $this->request = $app['request_stack']->getCurrentRequest();
 
@@ -147,26 +146,18 @@ class BaseStalkerController {
         $this->app['controller_alias'] = $tmp[0];
         $this->app['action_alias'] = (count($tmp) == 2) ? $tmp[1] : '';
         $getenv = getenv('STALKER_ENV');
-        $ext_path = (!empty($tmp[0]) ? implode('', array_map('ucfirst', explode('-', $tmp[0]))): 'Index') . '/' . (!empty($tmp[1]) ? str_replace('-', '_', $tmp[1]): 'index') . '/';
-
-        $min_ext_script_path = 'min/'. $this->app['twig_theme'] . '/' . strtolower(str_replace('/', '_', trim($ext_path, '/')));
-
-/*        $this->app['twig']->loadFromExtension('assetic', array(
-            'write_to' => $min_ext_script_path,
-        ));*/
-
-        /*$app['assetic.asset_manager']->set()*/
-
-        $this->app['assetic.path_to_web'] = $min_ext_script_path;
-
-        /*print_r($this->app['assetic.path_to_web']); exit;*/
-
-        /*$this->app->extend('assetic', function($assetic, $app){
-            'write_to' => $min_ext_script_path,
-        });*/
-
-        $this->app['ext_script_path'] = '/' . $ext_path;
         $this->app['stalker_env'] = ($getenv && $getenv == 'develop') ? 'dev': 'min';
+
+        $ext_path = (!empty($tmp[0]) ? implode('', array_map('ucfirst', explode('-', $tmp[0]))): 'Index') . '/' . (!empty($tmp[1]) ? str_replace('-', '_', $tmp[1]): 'index') . '/';
+/*        if (!$getenv) {
+            $ext_path = strtolower(str_replace('/', '_', $ext_path));
+        }*/
+
+        $path_to_web = $this->app['assetic.path_to_web'] . '/min/' . $this->app['twig_theme'];
+        $this->app['assetic.path_to_web'] = $path_to_web;
+
+        $this->app['assetic.path_to_source'] = __DIR__ . '/../../resources/views/' . $this->app['twig_theme'] . '/' . $ext_path;
+
         $this->baseHost = $this->request->getSchemeAndHttpHost();
         $this->workHost = $this->baseHost . Config::getSafe('portal_url', '/stalker_portal/');
         $this->app['relativePath'] = $this->relativePath = Config::getSafe('portal_url', '/stalker_portal/');
@@ -176,8 +167,17 @@ class BaseStalkerController {
         $action = (!empty($this->app['action_alias']) ? "/" . $this->app['action_alias'] : '');
         $workUrl = explode("?", str_replace(array($action, $controller), '', $this->Uri));
         $this->workURL = $workUrl[0];
+
         $this->app['breadcrumbs']->addItem('Stalker', $this->workURL);
         $this->refferer = $this->request->server->get('HTTP_REFERER');
+
+        if ($this->app['stalker_env'] == 'min') {
+            $this->app['assetic_js_path'] = $this->workURL . '/min/' . $this->app['twig_theme'] . '/js/';
+            $this->app['assetic_css_path'] = $this->workURL . '/min/' . $this->app['twig_theme'] . '/css/';
+        } else {
+            $this->app['assetic_js_path'] = $this->workURL . '/js/dev/' . $this->app['twig_theme'] . '/' . $ext_path;
+            $this->app['assetic_css_path'] = $this->workURL . '/css/dev/' . $this->app['twig_theme'] . '/' . $ext_path;
+        }
     }
 
     private function setSideBarMenu() {

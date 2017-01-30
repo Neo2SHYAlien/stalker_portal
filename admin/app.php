@@ -153,6 +153,36 @@ $app->register(new SilexAssetic\AsseticServiceProvider(),
             $fm->set('uglifycss', new \Assetic\Filter\UglifyCssFilter(
                 '/usr/local/bin/uglifycss'
             ));
+            $fm->set('cssmin', new \Assetic\Filter\CssMinFilter());
         })
     ));
+
+$app['twig']->addFunction(new \Twig_SimpleFunction('compressor', function ( $option ) use ($app){
+    if (getenv('STALKER_ENV')) {
+        ini_set('memory_limit', '1024M');
+    }
+
+    $filters = array(
+        'yui_css' => new \Assetic\Filter\Yui\CssCompressorFilter('/usr/share/yui-compressor/yui-compressor.jar'),
+        'yui_js' => new \Assetic\Filter\Yui\JsCompressorFilter('/usr/share/yui-compressor/yui-compressor.jar'),
+        'uglifyjs2' => new \Assetic\Filter\UglifyJs2Filter('/usr/local/bin/uglifyjs'),
+        'uglifycss' => new \Assetic\Filter\UglifyCssFilter('/usr/local/bin/uglifycss'),
+        'cssmin' => new \Assetic\Filter\CssMinFilter(),
+        'jsmin' => new \Assetic\Filter\JSMinFilter()
+    );
+
+    $compressor = new \Assetic\Asset\AssetCollection(array(
+        /*new \Assetic\Asset\FileAsset($option['additional_path']),*/
+        new \Assetic\Asset\GlobAsset($option['source_path']),
+    ), array($filters[$option['filter']]));
+
+    $compressor->setTargetPath(rtrim($option['dest_path'], '/'));
+
+    $writer = new Assetic\AssetWriter('');
+
+
+    $writer->writeAsset($compressor);
+    exit;
+}));
+
 return require_once 'controllers.php';
