@@ -101,11 +101,30 @@
 
     </script>
 
-{#    {% stylesheets '*.css' filter="yui_css" output='css/broadcast_servers_add_zone.css' %}
-    <link href="{{ app['assetic_css_path'] }}{{ asset_url |replace({'css/' : ''}) }}" type="text/css" rel="stylesheet" />
-    {% endstylesheets %}
+    {% set options = {
+    'source_path': app['assetic_ext_web_path'],
+    'source_file_name': '*.css',
+    'dest_path': '',
+    'dest_file_name': 'broadcast_servers_add_zone.css',
+    'filter': 'yui_css',
+    'type': 'css'
+    } %}
 
-    {% javascripts '*.js' filter="yui_js" output='js/broadcast_servers_add_zone.js' %}
-    <script src="{{ app['assetic_js_path'] }}{{ asset_url |replace({'js/' : ''}) }}"></script>
-    {% endjavascripts %}#}
+    {% for web_path in compressor(options) %}
+        <link href="{{ web_path }}" rel="stylesheet">
+    {% endfor %}
+
+    {% set options = {
+    'source_path': app['assetic_ext_web_path'],
+    'source_file_name': '*.js',
+    'dest_path': '',
+    'dest_file_name': 'broadcast_servers_add_zone.js',
+    'filter': 'yui_js',
+    'type': 'js'
+    } %}
+
+    {% for web_path in compressor(options) %}
+        <script src="{{ web_path }}"></script>
+    {% endfor %}
+
 {% endblock %}

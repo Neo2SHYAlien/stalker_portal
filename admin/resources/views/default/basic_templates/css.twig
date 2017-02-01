@@ -4,14 +4,30 @@
     'source_path': '../default_css/',
     'source_file_name': '*.css',
     'dest_path': '',
-    'dest_file_name': 'default.css',
+    'dest_file_name': 'style.css',
     'filter': 'yui_css',
     'type': 'css'
 } %}
- <link href="{{ compressor(options) }}" rel="stylesheet">
+{% for web_path in compressor(options) %}
+ <link href="{{ web_path }}" rel="stylesheet">
+{% endfor %}
+
+
+{% set options = {
+'source_path': '../../',
+'source_file_name': '*.css',
+'dest_path': 'jquery_ui/',
+'dest_file_name': 'jquery-ui.min.css',
+'filter': 'yui_css',
+'type': 'css'
+} %}
+
+{% for web_path in compressor(options) %}
+    <link href="{{ web_path }}" rel="stylesheet">
+{% endfor %}
 
         <link href="{{ app.request_context.baseUrl }}/plugins/bootstrap/bootstrap.css" rel="stylesheet">
-        <link href="{{ app.request_context.baseUrl }}/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet">
+        {#<link href="{{ app.request_context.baseUrl }}/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet">#}
         <link href="{{ app.request_context.baseUrl }}/plugins/fancybox/jquery.fancybox.css" rel="stylesheet">
         <link href="{{ app.request_context.baseUrl }}/plugins/select2/select2.css" rel="stylesheet">
         <link href="{{ app.request_context.baseUrl }}/css/style.css?ver={{ random() }}{% if 0 and attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}" rel="stylesheet">
