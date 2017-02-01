@@ -149,14 +149,8 @@ class BaseStalkerController {
         $this->app['stalker_env'] = ($getenv && $getenv == 'develop') ? 'dev': 'min';
 
         $ext_path = (!empty($tmp[0]) ? implode('', array_map('ucfirst', explode('-', $tmp[0]))): 'Index') . '/' . (!empty($tmp[1]) ? str_replace('-', '_', $tmp[1]): 'index') . '/';
-/*        if (!$getenv) {
-            $ext_path = strtolower(str_replace('/', '_', $ext_path));
-        }*/
 
-        $path_to_web = $this->app['assetic.path_to_web'] . '/min/' . $this->app['twig_theme'];
-        $this->app['assetic.path_to_web'] = $path_to_web;
-
-        $this->app['assetic.path_to_source'] = __DIR__ . '/../../resources/views/' . $this->app['twig_theme'] . '/' . $ext_path;
+        $this->app['assetic_path_to_source'] = $this->baseDir . '/../server/adm/';
 
         $this->baseHost = $this->request->getSchemeAndHttpHost();
         $this->workHost = $this->baseHost . Config::getSafe('portal_url', '/stalker_portal/');
@@ -172,11 +166,15 @@ class BaseStalkerController {
         $this->refferer = $this->request->server->get('HTTP_REFERER');
 
         if ($this->app['stalker_env'] == 'min') {
-            $this->app['assetic_js_path'] = $this->workURL . '/min/' . $this->app['twig_theme'] . '/js/';
-            $this->app['assetic_css_path'] = $this->workURL . '/min/' . $this->app['twig_theme'] . '/css/';
+            $this->app['assetic_base_web_path'] = $this->workURL . '/min/';
+            $this->app['assetic_base_js_path'] =  $this->app['twig_theme'] . '/js/';
+            $this->app['assetic_base_css_path'] = $this->app['twig_theme'] . '/css/';
+            $this->app['assetic_ext_web_path'] = $ext_path;
         } else {
-            $this->app['assetic_js_path'] = $this->workURL . '/js/dev/' . $this->app['twig_theme'] . '/' . $ext_path;
-            $this->app['assetic_css_path'] = $this->workURL . '/css/dev/' . $this->app['twig_theme'] . '/' . $ext_path;
+            $this->app['assetic_base_web_path'] = $this->workURL;
+            $this->app['assetic_base_js_path'] =  'js/dev/';
+            $this->app['assetic_base_css_path'] = 'css/dev/';
+            $this->app['assetic_ext_web_path'] = $ext_path;
         }
     }
 

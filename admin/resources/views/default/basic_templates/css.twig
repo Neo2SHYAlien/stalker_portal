@@ -1,18 +1,14 @@
 {# empty Twig template #}
 
-{#{% stylesheets '/../server/adm/css/*.css' filter="yui_css" output='css/libraries.css' %}
-<link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
-{% endstylesheets %}#}
-
-{% set assetic_path_to_source = app['assetic.path_to_source'] %}
-{{ compressor({'source_path' : '/var/www/test1/stalker_portal/server/adm/css/dev/default_css/style.css', 'dest_path': '/var/www/test1/stalker_portal/server/adm/min/default/css/default.css' , 'filter': 'yui_css'}) }}
-
-{# {% stylesheets '*.css' filter="yui_css" output='css/default_css.css' %}
-<link href="{{ app['assetic_css_path'] }}{{ asset_url |replace({'css/' : ''}) }}" type="text/css" rel="stylesheet" />
-{% endstylesheets %}#}
-
-
-{#<link href="{{ asset( '../src/Common/DirtyBundle/Resources/assets/css/h.css' ) }}" rel="stylesheet" type="text/css" />#}
+{% set options = {
+    'source_path': '../default_css/',
+    'source_file_name': '*.css',
+    'dest_path': '',
+    'dest_file_name': 'default.css',
+    'filter': 'yui_css',
+    'type': 'css'
+} %}
+ <link href="{{ compressor(options) }}" rel="stylesheet">
 
         <link href="{{ app.request_context.baseUrl }}/plugins/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="{{ app.request_context.baseUrl }}/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet">

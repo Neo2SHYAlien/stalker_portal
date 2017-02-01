@@ -133,7 +133,7 @@ $app->extend('twig', function ($twig, $app) {
 });
 
 $auto_dump_assets = (getenv('STALKER_ENV') && !(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ));
-$app->register(new SilexAssetic\AsseticServiceProvider(),
+/*$app->register(new SilexAssetic\AsseticServiceProvider(),
     array(
         'assetic.path_to_web' => __DIR__ . '/../server/adm',
         'assetic.options' => array(
@@ -155,34 +155,74 @@ $app->register(new SilexAssetic\AsseticServiceProvider(),
             ));
             $fm->set('cssmin', new \Assetic\Filter\CssMinFilter());
         })
-    ));
+    ));*/
 
 $app['twig']->addFunction(new \Twig_SimpleFunction('compressor', function ( $option ) use ($app){
-    if (getenv('STALKER_ENV')) {
-        ini_set('memory_limit', '1024M');
+
+    function optionsConcat(&$var, $fields = array(), $options = array()){
+        foreach($fields as $field){
+            if (!empty($options[$field])) {
+                $var .= $options[$field];
+            }
+        }
     }
 
-    $filters = array(
-        'yui_css' => new \Assetic\Filter\Yui\CssCompressorFilter('/usr/share/yui-compressor/yui-compressor.jar'),
-        'yui_js' => new \Assetic\Filter\Yui\JsCompressorFilter('/usr/share/yui-compressor/yui-compressor.jar'),
-        'uglifyjs2' => new \Assetic\Filter\UglifyJs2Filter('/usr/local/bin/uglifyjs'),
-        'uglifycss' => new \Assetic\Filter\UglifyCssFilter('/usr/local/bin/uglifycss'),
-        'cssmin' => new \Assetic\Filter\CssMinFilter(),
-        'jsmin' => new \Assetic\Filter\JSMinFilter()
-    );
+    if (getenv('STALKER_ENV')) {
+        ini_set('memory_limit', '1024M');
 
-    $compressor = new \Assetic\Asset\AssetCollection(array(
-        /*new \Assetic\Asset\FileAsset($option['additional_path']),*/
-        new \Assetic\Asset\GlobAsset($option['source_path']),
-    ), array($filters[$option['filter']]));
+        $filters = array(
+            'yui_css' => new \Assetic\Filter\Yui\CssCompressorFilter('/usr/share/yui-compressor/yui-compressor.jar'),
+            'yui_js' => new \Assetic\Filter\Yui\JsCompressorFilter('/usr/share/yui-compressor/yui-compressor.jar'),
+            'uglifyjs2' => new \Assetic\Filter\UglifyJs2Filter('/usr/local/bin/uglifyjs'),
+            'uglifycss' => new \Assetic\Filter\UglifyCssFilter('/usr/local/bin/uglifycss'),
+            'cssmin' => new \Assetic\Filter\CssMinFilter(),
+            'jsmin' => new \Assetic\Filter\JSMinFilter()
+        );
 
-    $compressor->setTargetPath(rtrim($option['dest_path'], '/'));
+        $source_path = $app['assetic_path_to_source'] . ($option['type'] == 'css' ? $app['assetic_base_css_path']: $app['assetic_base_js_path']) . $app['twig_theme'] . '/';
+        if (!empty($option['source_path'])) {
+            $source_path .= $option['source_path'];
+        }
 
-    $writer = new Assetic\AssetWriter('');
+        $sources = array();
+        if (is_string($option['source_file_name'])) {
+            if (strpos($option['source_file_name'], '*') !== FALSE) {
+                $sources = glob(rtrim($source_path, '/') . '/' . $option['source_file_name']);
+            } else {
+                $sources = array($option['source_file_name']);
+            }
+        }
+
+        print_r(pathinfo(rtrim($source_path, '/') . '/'));
+        echo PHP_EOL;
+
+        print_r($sources); exit;
+        $sources = array_map(function($f_name) use($source_path) {return rtrim($source_path, '/') . '/' . $f_name;}, $sources);
+        $compressor = new \Assetic\Asset\AssetCollection(array(), array($filters[$option['filter']]));
 
 
-    $writer->writeAsset($compressor);
-    exit;
+        foreach($sources as $source){
+            $compressor->add(new \Assetic\Asset\FileAsset($source));
+        }
+
+        $destination = $app['assetic_path_to_source'] . 'min/' . $app['twig_theme'] . ($option['type'] == 'css' ? '/css/': '/js/');
+        optionsConcat($destination, array('dest_path', 'dest_file_name'), $option);
+        $compressor->setTargetPath(trim($destination, '/'));
+
+        print_r($compressor); exit;
+
+        $writer = new Assetic\AssetWriter('');
+        $writer->writeAsset($compressor);
+
+        $path = $app['assetic_base_web_path'] . ($option['type'] == 'css' ? $app['assetic_base_css_path']: $app['assetic_base_js_path']) . $app['twig_theme'] . '/';
+        optionsConcat($path, array('source_path', 'source_file_name'), $option);
+
+    } else {
+        $path = $app['assetic_base_web_path'] . ($option['type'] == 'css' ? $app['assetic_base_css_path']: $app['assetic_base_js_path']);
+        optionsConcat($path, array('dest_path', 'dest_file_name'), $option);
+    }
+
+    return $path;
 }));
 
 return require_once 'controllers.php';
