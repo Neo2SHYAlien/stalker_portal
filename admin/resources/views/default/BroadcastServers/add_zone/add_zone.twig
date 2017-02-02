@@ -98,10 +98,44 @@
         {{ form_end(app['form']) }}  
     </div>
     <script type="text/javascript" defer>
-               
+
         function yelp() {
             $(document).ready(function () {
                 $('head').append('<link href="{{ app.request_context.baseUrl }}/plugins/multiselect_transfer/style.css" type="text/css" rel="stylesheet" />');
+
+                $('#form_disabled_countries, #form_countries').find('option[value="0"]').remove();
+
+                if ($('#form_default_zone').val() == 1){
+                    $('#form_default_zone').attr('checked', 'checked');
+                }
+
+                $(document).on('click', '#form_save', function(){
+                    var sendData =[];
+                    $('#form_disabled_countries').find('option').each(function(index, val){
+                        var _val = $(this);
+                        if (_val.val()) {
+                            sendData.push(_val.val());
+                        }
+                    });
+                    $('#form_disabled_countries').empty().append("<option value='0'></option>");
+                    $('#form_disabled_countries option').attr('selected', 'selected');
+
+                    $('#form_disabled_countries_json').val(JSON.stringify(sendData));
+
+                    var sendData =[];
+                    $('#form_countries').find('option').each(function(index, val){
+                        var _val = $(this);
+                        if (_val.val()) {
+                            sendData.push(_val.val());
+                        }
+                    });
+                    $('#form_countries_json').val(JSON.stringify(sendData));
+                    $('#form_countries').empty().append("<option value='0'></option>");
+                    $('#form_countries option').attr('selected', 'selected');
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", yelp, false);
 
     </script>
 
