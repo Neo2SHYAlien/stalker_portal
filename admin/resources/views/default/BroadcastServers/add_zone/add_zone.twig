@@ -3,7 +3,7 @@
 {% set active_alias = 'broadcast-zone-list' %}
 
 {% block content %}
-    <div id="add_channel" class="govnoclass">
+    <div id="add_channel">
         {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
         <div class="bg-danger">
             <div class="bg-danger">
