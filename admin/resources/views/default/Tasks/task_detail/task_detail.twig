@@ -1,7 +1,8 @@
-{% extends (app['twig_theme'] ~ '/' ~ 'layout.twig') | trans %}
-{% import (app['twig_theme'] ~ '/macro/iptw_macro.twig') | trans  as main_macro %}
-{% set title = ('Tasks'|trans ~ ': ' ~ 'History of task'|trans ~ ' №' ~ app.task_num ~ ' ' ~ 'in section'|trans ~ ' "' ~ app.taskTypeTitle ~'"') | trans %}
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
 {% set active_alias = 'tasks-list' %}
+{% set title = ('Tasks'|trans ~ ': ' ~ 'History of task'|trans ~ ' №' ~ app.task_num ~ ' ' ~ 'in section'|trans ~ ' "' ~ app.taskTypeTitle ~'"') %}
 
 {% block content %}
     <div id="iptv_list">
@@ -129,8 +130,8 @@
         </div>
     </div>
 
-    <script type="text/javascript" defer>
 
+    <script type="text/javascript" defer>
 
         function yelp() {
             $(document).ready(function () {

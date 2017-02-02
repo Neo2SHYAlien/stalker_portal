@@ -98,6 +98,10 @@
         {{ form_end(app['form']) }}  
     </div>
     <script type="text/javascript" defer>
+               
+        function yelp() {
+            $(document).ready(function () {
+                $('head').append('<link href="{{ app.request_context.baseUrl }}/plugins/multiselect_transfer/style.css" type="text/css" rel="stylesheet" />');
 
     </script>
 

@@ -1,7 +1,9 @@
 /* Set the defaults for DataTables initialisation */
 $.extend(true, $.fn.dataTable.defaults, {
 	"searchHighlight": true,
-    "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+//    "sDom": "<'row-fluid'<'span6'l><'span6'f>>rt<'row-fluid'<'span6'i><'span6'p>>",
+    "sDom": "<'row-fluid'<'col-sm-6'li><'col-sm-6'f>>rt<'row-fluid'<'span6'i><'span6'p>>",
+//    "sDom": "<'row-fluid'<'span6'i><'span6'f>>rt<'row-fluid'<'span6'l><'span6'p>>",
     "sPaginationType": "bootstrap",
     "iDisplayLength": 50,
 	"fnInitComplete": function (oSettings) {
@@ -27,6 +29,7 @@ $.extend(true, $.fn.dataTable.defaults, {
             });
         }
 	},
+
     "fnDrawCallback": function (oSettings) {
         var paginateRow = $(oSettings.nTableWrapper).find('div.dataTables_paginate');
         var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
@@ -36,18 +39,35 @@ $.extend(true, $.fn.dataTable.defaults, {
             $(paginateRow).css("display", "none");
         }
         if (oSettings.fnRecordsDisplay() && oSettings.aoData && oSettings.aoData.length) {
-            var curOption = {
-                tableHeight: oSettings.oInstance.height(),
-                ddMenuMaxHeight: 0,
-                ddMenuHeight: 0,
-                trParentOffset: 0
-            };
+            var tableHeight = oSettings.oInstance.height();
+            var ddMenuMaxHeight = 0, ddMenuHeight = 0, trParentOffset = 0, ddMenuItem;
             $(oSettings.nTable).children("tbody").find('tr').each(function(){
-                return checkMenuItemPosition(this, curOption);
+                ddMenuItem = $(this).find('td:last-of-type').find(".dropdown-menu");
+                if (!ddMenuItem.length) {
+                    console.log("ddMenu not found");
+                    return false;
+                }
+                ddMenuItem.closest('dropup').removeClass('dropup');
+                trParentOffset = $(this).position();
+                trParentOffset = trParentOffset.top;
+                ddMenuHeight = ddMenuItem.height() + 10;
+
+                if (ddMenuHeight > ddMenuMaxHeight){
+                    ddMenuMaxHeight = ddMenuHeight ;
+                }
+
+                if (ddMenuHeight > tableHeight) {
+                    return true;
+                }
+
+                if ((trParentOffset > ddMenuHeight) && (trParentOffset + ddMenuHeight - 30) > tableHeight ) {
+                    ddMenuItem.closest('div').addClass('dropup');
+                }
+
             });
 
-            if (((curOption.tableHeight - curOption.trParentOffset) - curOption.ddMenuMaxHeight) < 30) {
-                $(oSettings.nTableWrapper).css('minHeight', curOption.ddMenuMaxHeight + curOption.tableHeight + 30);
+            if (((tableHeight - trParentOffset) - ddMenuMaxHeight) < 30) {
+                $(oSettings.nTableWrapper).css('minHeight', ddMenuMaxHeight + tableHeight + 30);
             }
         }
         var oSearch = oSettings.oSearch? oSettings.oSearch: oSettings.oPreviousSearch;
@@ -64,11 +84,13 @@ $.extend(true, $.fn.dataTable.defaults, {
             }
         });
     },
+
     "fnRowCallback": function (nRow, aData, iDisplayIndex) {
         if (aData && aData.RowOrder) {
             nRow.setAttribute('id', aData.RowOrder);  //Initialize row id for every row
         }
     },
+
     "ajax" : {
         data: function(data) {
             data = dataTableDataPrepare(data);
@@ -94,9 +116,11 @@ $.extend(true, $.fn.dataTable.defaults, {
 
         }
     },
+
     "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"
     },
+
     "aoColumnDefs": [
         {"width": "16px", "targets": [-1]}
     ]
@@ -105,8 +129,9 @@ $.extend(true, $.fn.dataTable.defaults, {
 $.extend(true, $.fn.dataTable.defaults.column, {
     "createdCell" : function (td, cellData, rowData, row, col) {
         var oSettings = this.fnSettings();
-        var oSearch = this.fnSettings().oSearch? this.fnSettings().oSearch: this.fnSettings().oPreviousSearch;
+        var oSearch = this.fnSettings().oSearch ? this.fnSettings().oSearch : this.fnSettings().oPreviousSearch;
         var colSettings = oSettings.aoColumns[col];
+        
         if (oSearch.sSearch) {
             if (colSettings.bSearchable) {
                 $(td).addClass('DThighlight');
@@ -218,6 +243,7 @@ $.extend( $.fn.dataTableExt.oPagination, {
 	}
 } );
 
+
 $.fn.dataTableExt.oApi.fnUpdateCurrentRow = function ( oSettings, row, data ){
 
     if (oSettings.oInstance.DataTable().row( row ) && data && data.data && data.data.length == 1) {
@@ -226,13 +252,7 @@ $.fn.dataTableExt.oApi.fnUpdateCurrentRow = function ( oSettings, row, data ){
         newData.rerendered = true;
         oSettings.oInstance.dataTable().fnUpdate(newData, row, null, false, false);
     }
-    var curOption = {
-        tableHeight: oSettings.oInstance.height(),
-        ddMenuMaxHeight: 0,
-        ddMenuHeight: 0,
-        trParentOffset: 0
-    };
-    checkMenuItemPosition(row, curOption);
+
 };
 
 $.fn.dataTableExt.oApi.fnRemoveCurrentRow = function ( oSettings, row ){
@@ -248,15 +268,7 @@ $.fn.dataTableExt.oApi.fnRemoveCurrentRow = function ( oSettings, row ){
             oSettings.oInstance.DataTable().page(oSettings._iDisplayStart >= oSettings._iDisplayLength ? 'previous': 'next').draw(false);
         } else {
             oSettings.oInstance.DataTable().ajax.reload();
-            return;
         }
-        var curOption = {
-            tableHeight: oSettings.oInstance.height(),
-            ddMenuMaxHeight: 0,
-            ddMenuHeight: 0,
-            trParentOffset: 0
-        };
-        checkMenuItemPosition(oSettings.oInstance.DataTable().row( oSettings.oInstance.DataTable().rows().length ), curOption);
     }
 };
 
@@ -352,6 +364,49 @@ $.fn.dataTableExt.oApi.fnCheckJSON = function ( oSettings ){
     }
 };
 
+
+function dataTableDataPrepare(data) {
+    if (!data || !data.columns) {
+        return data;
+    }
+    
+    var visibleFields = {};
+    var dataFields = data.columns.map(function(el){ return el.data;});
+    
+    $("table.dataTable").each( function(){
+        
+        var tmpF = {length: 0};
+        var aoColumns = $(this).dataTable().fnSettings().aoColumns;
+        
+        $.each(aoColumns, function(){
+            if (dataFields.indexOf(this.data) === -1) {
+                tmpF.length = 0;
+                return true;
+            }
+            tmpF[this.data] = this.bVisible;
+            tmpF.length++;
+        });
+        
+        if (tmpF.length != 0) {
+            delete tmpF.length;
+            visibleFields = tmpF;
+            return false;
+        }
+    });
+
+    $.each(data.columns, function(){
+        if (visibleFields.hasOwnProperty(this.data)) {
+            this.visible = visibleFields[this.data];
+        }
+    });
+
+    var params = $.parseParams(window.location.href.split('?')[1] || ''); //window.location.href.split('?')[1] || ''
+    for (var i in params) {
+        data[i] = params[i];
+    }
+    return data;
+}
+
 /*
  * TableTools Bootstrap compatibility
  * Required TableTools 2.1+
@@ -389,66 +444,3 @@ if ( $.fn.DataTable.TableTools ) {
 	} );
 }
 
-function dataTableDataPrepare(data) {
-    if (!data || !data.columns) {
-        return data;
-    }
-    var visibleFields = {};
-    var dataFields = data.columns.map(function(el){ return el.data;});
-    $("table.dataTable").each(function(){
-        var tmpF = {length: 0};
-        var aoColumns = $(this).dataTable().fnSettings().aoColumns;
-        $.each(aoColumns, function(){
-            if (dataFields.indexOf(this.data) === -1) {
-                tmpF.length = 0;
-                return true;
-            }
-            tmpF[this.data] = this.bVisible;
-            tmpF.length++;
-        });
-        if (tmpF.length != 0) {
-            delete tmpF.length;
-            visibleFields = tmpF;
-            return false;
-        }
-    });
-    $.each(data.columns, function(){
-        if (visibleFields.hasOwnProperty(this.data)) {
-            this.visible = visibleFields[this.data];
-        }
-    });
-    var params = $.parseParams(window.location.href.split('?')[1] || ''); //window.location.href.split('?')[1] || ''
-    for (var i in params) {
-        data[i] = params[i];
-    }
-    return data;
-}
-
-function checkMenuItemPosition(tRow, curOption){
-
-    var ddMenuItem = $(tRow).find('td:last-of-type').find(".dropdown-menu");
-    if (!ddMenuItem.length) {
-        console.log("ddMenu not found");
-        return false;
-    }
-    ddMenuItem.closest('dropup').removeClass('dropup');
-    var trParentOffset = $(tRow).position();
-    trParentOffset = trParentOffset.top;
-    curOption.ddMenuHeight = ddMenuItem.height() + 10;
-
-    if (curOption.ddMenuHeight > curOption.ddMenuMaxHeight){
-        curOption.ddMenuMaxHeight = curOption.ddMenuHeight ;
-    }
-
-    if (!curOption.tableHeight) {
-        curOption.tableHeight = $(tRow).closest('table').height();
-    }
-
-    if (curOption.ddMenuHeight > curOption.tableHeight) {
-        return true;
-    }
-
-    if ((trParentOffset > curOption.ddMenuHeight) && (trParentOffset + curOption.ddMenuHeight - 30) > curOption.tableHeight ) {
-        ddMenuItem.closest('div').addClass('dropup');
-    }
-}

@@ -1,7 +1,20 @@
-{% extends (app['twig_theme'] ~ '/' ~ 'layout.twig') | trans %}
-{% import (app['twig_theme'] ~ '/macro/iptw_macro.twig') | trans  as main_macro %}
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
 {% set active = 'settings' %}
-{% set title = ('Settings'|trans ~ ': ' ~ 'firmware update'|trans) | trans %}
+{% set title =  'Settings'|trans ~ ': ' ~ 'firmware update'|trans %}
+
+
+{% block footer %}
+    {{ parent() }}
+
+    <script type="text/javascript" defer>
+       
+        {% include (app.twig_theme ~ "/Settings/common/common.js") %}
+
+    </script>
+{% endblock %}
+
 
 {% block content %}
     <div id="iptv_list">
@@ -243,8 +256,6 @@
             </form>
         </div>
     </div>
-                                                                           
-    <script type="text/javascript" defer>
 
         var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
 
@@ -298,17 +309,17 @@
                                                         </a>\n\
                                                         <ul class='dropdown-menu pull-right'>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/common-list-json' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/common-list-json' data-id='" + id + "'>\n\
                                                                     <span>{{ 'Edit'|trans }}</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-common-item-status' data-id='" + id + "' data-enable='" + enable + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/toggle-common-item-status' data-id='" + id + "' data-enable='" + enable + "'>\n\
                                                                     <span>"+ (enable == 1? '<span>{{ 'Switch off'|trans }}</span>':'<span>{{ 'Switch on'|trans }}</span>') + "</span>\n\
                                                                 </a>\n\
                                                             </li>\n\
                                                             <li>\n\
-                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-common-item' data-id='" + id + "'>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-common-item' data-id='" + id + "'>\n\
                                                                     <span> {{ 'Delete'|trans }} </span>\n\
                                                                 </a>\n\
                                                             </li>\n\
@@ -320,7 +331,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/common-list-json"
+                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/common-list-json"
                 },
                 "language": {
                     "url": "{{ app.datatable_lang_file }}"

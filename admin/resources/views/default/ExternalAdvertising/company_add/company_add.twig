@@ -1,5 +1,19 @@
-{% extends (app['twig_theme'] ~ '/' ~ 'layout.twig') | trans %}
-{% set title = ('Advertising'|trans ~ ': ' ~ 'Campaign'|trans) | trans %}
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+
+{% set active = 'company-list' %}
+{% set title = 'Advertising'|trans ~ ': ' ~ 'Campaign'|trans %}
+
+
+{% block footer %}
+    {{ parent() }}
+
+    <script type="text/javascript" defer>
+       
+        {% include (app.twig_theme ~ "/ExternalAdvertising/company_add/company_add.js") %}
+
+    </script>
+{% endblock %}
+
 
 {% block content %}
 
@@ -146,75 +160,5 @@
         </div>
         {{ form_end(app['form']) }}  
     </div>
-    <script type="text/javascript" defer>
 
-        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
-
-        var conf = {
-            form: '#form_',
-            lang : '{{ app.js_validator_language }}',
-            showHelpOnFocus : true,
-            validateHiddenInputs: true,
-            modules: 'jsconf',
-            onSuccess: function () {
-                $('div[id$="_part"]').each(function(){
-                    if (!$(this).is(':visible')) {
-                        $(this).find('option').removeAttr('selected');
-                    }
-                });
-                $(conf.form).get(0).submit();
-                return true;
-            },
-            onError: function () {
-                return false;
-            }
-        };
-
-        function DemoSelect2() {
-            $('select').select2(select2Opt);
-        }
-        
-        function yelp() {
-            $(document).ready(function () {
-                $.validate(conf);
-
-                $("#form_save").on('click', function (e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    if ($(conf.form).isValid({}, conf, true)) {
-                        conf.onSuccess();
-                    } else {
-                        conf.onError();
-                    }
-                    return false;
-                });
-
-                LoadSelect2Script(DemoSelect2);
-
-                $(document).on('change', "#form_platform", function(e){
-                    var selectedVal = $(this).val();
-                    $(this).find("option").each(function(){
-                        if($(this).val() != selectedVal) {
-                            $("#" + $(this).val() + "_part").hide().find("input[type='checkbox']").prop("checked", false).removeAttr("checked");
-                        } else {
-                            $("#" + $(this).val() + "_part").show();
-                        }
-                    });
-                });
-                setSelectWarning($('#form_stb_205'));
-                $(document).on('change', '#form_stb_205', function(e){
-                    setSelectWarning($(this));
-                });
-            });
-        }
-        document.addEventListener("DOMContentLoaded", yelp, false);
-
-        function setSelectWarning(selectObj){
-            if (selectObj.val()) {
-                $('label[for="' + selectObj.attr('id') + '"]').closest('div').after("<label class='txt-danger col-sm-offset-1 control-label'>{{ 'Attention! advertising block will be played instead of the content.' | trans }}</label>");
-            } else {
-                $('label[for="' + selectObj.attr('id') + '"]').closest('div').next('label').remove();
-            }
-        }
-    </script>
 {% endblock %}
