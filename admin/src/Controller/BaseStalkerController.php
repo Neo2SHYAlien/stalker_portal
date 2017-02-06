@@ -149,6 +149,7 @@ class BaseStalkerController {
         $this->app['stalker_env'] = ($getenv && $getenv == 'develop') ? 'dev': 'min';
 
         $ext_path = (!empty($tmp[0]) ? implode('', array_map('ucfirst', explode('-', $tmp[0]))): 'Index') . '/' . (!empty($tmp[1]) ? str_replace('-', '_', $tmp[1]): 'index') . '/';
+        $this->app['assetic_ext_min_name'] = (!empty($tmp[0]) ? str_replace('-', '_', $tmp[0]): 'index') . '_' . (!empty($tmp[1]) ? str_replace('-', '_', $tmp[1]): 'index');
 
         $this->app['assetic_path_to_source'] = $this->baseDir . '/../server/adm/';
 
@@ -171,7 +172,7 @@ class BaseStalkerController {
             $this->app['assetic_base_css_path'] = $this->app['twig_theme'] . '/css/';
             $this->app['assetic_ext_web_path'] = $ext_path;
         } else {
-            $this->app['assetic_base_web_path'] = $this->workURL;
+            $this->app['assetic_base_web_path'] = rtrim($this->workURL, '/') . '/';
             $this->app['assetic_base_js_path'] =  'js/dev/';
             $this->app['assetic_base_css_path'] = 'css/dev/';
             $this->app['assetic_ext_web_path'] = $ext_path;

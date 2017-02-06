@@ -133,6 +133,9 @@ $app->extend('twig', function ($twig, $app) {
 });
 
 $app['twig']->addFunction(new \Twig_SimpleFunction('compressor', function ( $option ) use ($app){
+    if (empty($option['dest_file_name'])) {
+        $option['dest_file_name'] = $app['assetic_ext_min_name'] . ($option['type'] == 'css' ? '.css': '.js');
+    }
 
     if (getenv('STALKER_ENV')) {
         ini_set('memory_limit', '1024M');
@@ -168,7 +171,7 @@ $app['twig']->addFunction(new \Twig_SimpleFunction('compressor', function ( $opt
         $writer = new Assetic\AssetWriter('');
         $writer->writeAsset($compressor);
 
-        $web_path = $app['assetic_base_web_path'] . '/' . ($option['type'] == 'css' ? $app['assetic_base_css_path']: $app['assetic_base_js_path']) . $app['twig_theme'] . '/';
+        $web_path = $app['assetic_base_web_path'] . ($option['type'] == 'css' ? $app['assetic_base_css_path']: $app['assetic_base_js_path']) . $app['twig_theme'] . '/';
 
         if (!empty($option['source_path'])) {
             $web_path = ((substr($option['source_path'], 0, 3) == '../' ? dirname($web_path) . '/' . substr($option['source_path'], 3) : $web_path . $option['source_path'])) ;
