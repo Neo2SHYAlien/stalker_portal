@@ -105,8 +105,8 @@ class EventsController extends \Controller\BaseStalkerController {
 
     public function index() {
 
-        if (empty($this->app['action_alias'])) {
-            return $this->app->redirect($this->app['controller_alias'] . '/events');
+        if (empty($this->app['action_alias']) || $this->app['action_alias'] == 'index') {
+            return $this->app->redirect($this->workURL . '/' . $this->app['controller_alias'] . '/events');
         }
 
         if ($no_auth = $this->checkAuth()) {

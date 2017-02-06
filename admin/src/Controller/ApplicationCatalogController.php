@@ -160,6 +160,16 @@ class ApplicationCatalogController extends \Controller\BaseStalkerController {
         return $this->app['twig']->render($this->getTemplateName(__METHOD__));
     }
 
+    public function tos(){
+        if (!empty($this->postData['tos_alias'])) {
+            $redirect_path = "/application-catalog" . (($this->postData['tos_alias']) == 'launcher_apps' ? '/smart-application-list': '/application-list');
+        } else {
+            $redirect_path = "/";
+        }
+
+        return $this->app->redirect($this->workURL . $redirect_path);
+    }
+
     //----------------------- ajax method --------------------------------------
 
     public function application_list_json($local_uses = FALSE) {

@@ -35,14 +35,14 @@ class TariffsController extends \Controller\BaseStalkerController {
 
     public function index() {
         
-        if (empty($this->app['action_alias'])) {
-            return $this->app->redirect($this->app['controller_alias'] . '/tariff-plans');
+        if (empty($this->app['action_alias']) || $this->app['action_alias'] == 'index') {
+            return $this->app->redirect($this->workURL . '/' . $this->app['controller_alias'] . '/tariff-plans');
         }
         
         if ($no_auth = $this->checkAuth()) {
             return $no_auth;
         }
-        return $this->app->render($this->getTemplateName(__METHOD__));
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
     }
 
     public function service_packages() {

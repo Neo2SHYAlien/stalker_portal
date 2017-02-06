@@ -50,7 +50,7 @@
                     { "type": 'formatted-num', targets: [1] },
                     { "type": 'de_date', targets: [2, 3] }
                 ]
-            });
+            }).prev('.dataTables_processing').hide('');
         }
 
         function yelp() {

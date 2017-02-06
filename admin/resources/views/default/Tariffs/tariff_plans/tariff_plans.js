@@ -51,7 +51,7 @@
                     {"searchable": false, "targets": [-1, 2]},
                     {"sortable": false, "targets": [-1, -2]}
                 ]
-            });
+            }).prev('.dataTables_processing').hide('');
         }
 
         function yelp() {
