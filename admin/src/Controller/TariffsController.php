@@ -646,7 +646,7 @@ class TariffsController extends \Controller\BaseStalkerController {
         $allPackageTypes = array_combine($this->getFieldFromArray($this->allPackageTypes, 'id'), $this->getFieldFromArray($this->allPackageTypes, 'title'));
         $allServiceTypes = array_combine($this->getFieldFromArray($this->allServiceTypes, 'id'), $this->getFieldFromArray($this->allServiceTypes, 'title'));
 
-        $form = $builder->createBuilder('form', $data, array('csrf_protection' => false))
+        $form = $builder->createBuilder('form', $data)
                 ->add('id', 'hidden')
                 ->add('external_id', 'text')
                 ->add('name', 'text', array(
@@ -779,7 +779,7 @@ class TariffsController extends \Controller\BaseStalkerController {
         
         $data['packages_optional'] = json_encode($data['packages_optional']);
 
-        $form = $builder->createBuilder('form', $data, array('csrf_protection' => false))
+        $form = $builder->createBuilder('form', $data)
                 ->add('id', 'hidden')
                 ->add('external_id', 'text')
                 ->add('name', 'text', array('constraints' => array(new Assert\NotBlank()), 'required' => TRUE))
