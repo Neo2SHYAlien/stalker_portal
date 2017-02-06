@@ -58,7 +58,7 @@
 
     <script type="text/template" id="modal_del_buttons">
         <div class="pull-right no-padding">
-            <a id="del_album_btn" type="button" class="main_ajax btn btn-danger pull-right no_context_menu" href='{{ app.request.baseUrl }}/{{ app.controller_alias }}/remove-audio-albums'>{{ 'Delete'|trans }}</a>
+            <a id="del_album_btn" type="button" class="main_ajax btn btn-danger pull-right no_context_menu" href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-audio-albums'>{{ 'Delete'|trans }}</a>
             <button type="reset" id="del_album_button" class="btn btn-success pull-right">{{ 'Cancel'|trans }}</button>
         </div>
     </script>
