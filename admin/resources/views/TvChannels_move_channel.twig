@@ -5,15 +5,26 @@
 {% block content %}
     <div id="iptv_list_move">
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-			 <button class="btn btn-success pull-right " type="button" id="iptv_list_move_send">{{ 'Apply'|trans }}</button>
-                <div class="col-xs-offset-2 no-padding"  id="searc_and_backlight">
-                    <div class="input-group col-sm-4 pull-right">
-                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                        <input type="text" placeholder="{{ 'Enter title of the number of the channel'|trans }}..." class="form-control" data-original-title="" title="">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 pull-left " >
+                <div class="col-xs-8 col-sm-8 no-padding input-group channel_diapason">
+                    <label class="control-label col-xs-2 col-sm-2 no-modified">{{ 'Channels'|trans }}</label>
+                    <div class="col-xs-5 col-sm-5 no-margin-right no-padding-right leftbordercircle">
+                        <input class="form-control" placeholder="{{ 'from'|trans }}" type="text" id="channel_begin" name="channel_begin" value="1">
+                    </div>
+                    <div class="col-xs-5 col-sm-5 no-margin-left no-padding-left rightbordercircle">
+                        <input class="form-control" placeholder="{{ 'to'|trans }}" type="text" id="channel_end" name="channel_end" value="50">
                     </div>
                 </div>
-               
+                <div class="col-xs-2 col-sm-2 no-modified no-margin no-padding-left">
+                    <button class="btn btn-success green" type="button" id="iptv_list_move_show">{{ 'Get channels'|trans }}</button>
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-6">
+                <button class="btn btn-success pull-right " type="button" id="iptv_list_move_send">{{ 'Apply'|trans }}</button>
+                <div class="input-group col-xs-8 col-sm-8 col-md-8 col-lg-8 pull-right no-padding"  id="searc_and_backlight">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input type="text" placeholder="{{ 'Enter title of the number of the channel'|trans }}..." class="form-control" data-original-title="" title="">
+                </div>
             </div>
         </div>
         <div class="row">
@@ -23,75 +34,27 @@
         </div>
     </div>
     <script type="text/javascript" src="./plugins/scrollTo/jquery.scrollTo.min.js" defer=""></script>
+    <script type="text/javascript" src="./js/jquery.tmpl.min.js" defer=""></script>
     <script type="text/javascript">
-        var channelList = [
-        {% if app['allChannels'] %}
-            {% set i_last = app['allChannels']|last %}
-            {% for item in app.allChannels %}
-                {% if loop|last %}
-            {'logo': '{{item.logo}}', 'link': 'tv-channels/edit-channel?id={{item.id}}', 'name': '{{item.name}}', 'id': '{{item.id}}', 'number': '{{item.number}}', 'locked': '{{item.locked}}', 'old_number': '{{item.number}}', 'empty': '{{item.empty}}'}
-                {% else %}
-            {'logo': '{{item.logo}}', 'link': 'tv-channels/edit-channel?id={{item.id}}', 'name': '{{item.name}}', 'id': '{{item.id}}', 'number': '{{item.number}}', 'locked': '{{item.locked}}', 'old_number': '{{item.number}}', 'empty': '{{item.empty}}'},
-                {% endif %}
-            {% endfor %}
-        {% endif%}
-        ];
+        var channelList = [];
 
         function yelp() {
             $(document).ready(function () {
 
-                //
-                // Swap 2 elements on page. Used by WinMove function
-                //
-                jQuery.fn.swap = function (b, parentArray) {
-                    b = jQuery(b)[0];
-                    var a = this[0];
-                    var a_num = $(a).find('span.curr_num').data('number');
-                    var b_num = $(b).find('span.curr_num').data('number');
-                    var remove = $(b).children('div').hasClass('empty');
-
-                    b.parentNode.insertBefore(a, b);
-
-                    if (typeof(parentArray) == 'object' && parentArray.length !=0) {
-                        a_num = parseInt(a_num, 10) - 1;
-                        b_num = parseInt(b_num, 10) - 1;
-
-                        var direction = a_num < b_num ? 1: -1;
-                        var next_num = a_num + direction;
-
-                        while( Math.abs(b_num - next_num + direction) > 0) {
-                            if ( typeof(parentArray[next_num]) != 'undefined' && typeof(parentArray[next_num].locked) != 'undefined' &&  !parentArray[next_num].locked) {
-                                var temp_a_number = parentArray[a_num].number;
-                                var temp_next_number = parentArray[next_num].number;
-
-                                var temp_a = parentArray[a_num];
-                                parentArray[a_num] = parentArray[next_num];
-                                parentArray[next_num] = temp_a;
-
-                                parentArray[a_num].number = temp_a_number;
-                                parentArray[next_num].number = temp_next_number;
-
-                                a_num = next_num;
-                            }
-                            next_num += direction;
-                        }
-                    }
-                    return this;
-                };
-
-                channelListRender('#channelListContainer');
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $("#modalbox").data('complete', 0);
+                    var sendData = $(this).data();
+                    ajaxPostSend($(this).attr('href'), sendData, false, false);
+                    $(this).closest('div.open').removeClass('open');
+                    return false;
+                });
 
                 $(document).on('click', '#iptv_list_move_send', function(e){
                     e.stopPropagation();
                     e.preventDefault();
-                    var dataForSend = new Array();
-
-                    $.each(channelList, function(){
-                        if (this.number != this.old_number && !this.empty) {
-                            dataForSend.push({'id': this.id, 'number': this.number, 'old_number': this.old_number});
-                        }
-                        this.old_number = this.number;
-                    });
+                    var dataForSend = checkChanges(true);
 
                     if (dataForSend.length) {
                         showModalBox();
@@ -131,29 +94,6 @@
                     setBackLightFocus();
                     return false;
                 });
-                
-                function setBackLightFocus(){
-                    var first = $("#channelListContainer .box .backlight").get(0);
-                    if (!$(first).closest('.box').hasClass('shining')) {
-                        $(first).closest('.box').addClass('shining')
-                            $('#channelListContainer').scrollTo($(first).closest('.box'), 'slow');
-                        return;
-                    }
-                    $("#channelListContainer .box .backlight").each(function(index){
-                        var parent = $(this).closest('.box');                       
-                        if (index == 0 || parent.hasClass('shining')) {
-                            return true;
-                        } else if (index == $("#channelListContainer .box .backlight").length - 1){
-                            $("#channelListContainer .box").removeClass('shining');
-                            $('#channelListContainer').scrollTo(parent, 'slow');
-                            return false;
-                        }
-                        
-                        $('#channelListContainer').scrollTo(parent, 'slow');
-                        parent.addClass('shining');
-                        return false;
-                    });
-                }
 
                 $('#channelListContainer').on('click', '.box-icons a', function (e) {
                     e.preventDefault();
@@ -162,22 +102,73 @@
                     var childID = parseInt($(this).closest('.box').find('span.curr_num').data('number'), 10) - 1;
                     if (childI.hasClass('fa-lock')) {
                         childI.removeClass('fa-lock').addClass('fa-unlock');
-                        $(this).closest("div.box").removeClass('no-drop').draggable("enable").droppable("enable");
+                        $(this).closest("div.box").removeClass('sortable-disabled');
                         channelList[childID].locked = false;
                     } else {
                         childI.removeClass('fa-unlock').addClass('fa-lock');
-                        $(this).closest("div.box").addClass('no-drop').draggable("disable").droppable("disable");
+                        $(this).closest("div.box").addClass('sortable-disabled');
                         channelList[childID].locked = true;
                     }
                     ajaxPostSend('{{ app['controller_alias'] }}/toogle-lock-channel', {data:{1: {id: childI.data('id'), locked: channelList[childID].locked} } });
                     $("#modalbox").data('complete', 1);
                     return false;
                 });
-                
+
+                $(document).on('click', '#iptv_list_move_show', function(e){
+                    showModalBox();
+                    $('#channelListContainer').empty().delay(1000).promise().done(function(){
+                        ajaxPostSend('{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}move-channel-list-json', {channel_begin: $.trim($("#channel_begin").val()), channel_end: $.trim($("#channel_end").val())}, false, false, true);
+                    });
+                });
+
+                $( document ).on('show', "div.droptrue",function(e){
+                    $(this).sortable({
+                        connectWith: "div.droptrue",
+                        cancel: ".sortable-disabled",
+                        items: '.sortable-enabled',
+                        create: function(){
+                            initListItemsPosition(this);
+                        },
+                        stop: function( event, ui ) {
+                            var sourceList = $(event.target),
+                                destList = $(ui.item).closest('.ui-sortable'),
+                                sourceNum = sourceList.data('blocknum'),
+                                destNum = destList.data('blocknum'),
+                                forward = sourceNum <= destNum ? 1 : -1;
+
+                            sortAndMove(destList, forward);
+                        }
+                    });
+                    $(this).disableSelection();
+                });
+
             });
         }
 
         document.addEventListener( "DOMContentLoaded", yelp, false );
+
+        function setBackLightFocus(){
+            var first = $("#channelListContainer .box .backlight").get(0);
+            if (!$(first).closest('.box').hasClass('shining')) {
+                $(first).closest('.box').addClass('shining')
+                $('#channelListContainer').scrollTo($(first).closest('.box'), 'slow');
+                return;
+            }
+            $("#channelListContainer .box .backlight").each(function(index){
+                var parent = $(this).closest('.box');
+                if (index == 0 || parent.hasClass('shining')) {
+                    return true;
+                } else if (index == $("#channelListContainer .box .backlight").length - 1){
+                    $("#channelListContainer .box").removeClass('shining');
+                    $('#channelListContainer').scrollTo(parent, 'slow');
+                    return false;
+                }
+
+                $('#channelListContainer').scrollTo(parent, 'slow');
+                parent.addClass('shining');
+                return false;
+            });
+        }
 
         function channelListRender(container){
 
@@ -193,104 +184,114 @@
             var currentCount = 0;
             for (var i= 0; i< channelList.length; ) {
                 var currentBlock = $("<div/>", {'class': 'no-padding'}).appendTo(_container);
-                var currentItemsBlock = $("<div/>", {'class': 'no-padding'}).appendTo(currentBlock)
+                currentBlock.hide();
+                var currentItemsBlock = $("<div/>", {'class': 'no-padding droptrue'}).appendTo(currentBlock);
+                currentItemsBlock.hide();
                 for ( var j = currentCount; j < (currentCount + maxItemOnBlock) && j < channelList.length; j++) {
                     if (typeof(channelList[j]) == 'undefined') {
                         continue;
                     }
-                    currentItemsBlock.append(getChannelListItem(j+1, channelList[j]));
+                    var item = channelList[j];
+                    item['num'] = j+1;
+                    item['notempty'] = item['empty'] ? '0': '1';
+                    item['empty'] = item['empty'] ? 'empty' : '';
+                    item['notlocked'] = item['locked'] ? '0': '1';
+                    item['locked'] = item['locked'] ? 'sortable-disabled' : 'sortable-enabled';
+                    $("#list_item").tmpl(item).appendTo(currentItemsBlock);
                     i++;
                 }
+
                 currentBlock.prepend('<div class=" counter"><span>' + (currentCount + 1) + '-'+ (j) + '</span></div>');
                 currentCount = j;
                 currentBlock.css('top', 0);
                 currentBlock.css('left', (Math.ceil(currentCount/maxItemOnBlock) - 1)*250);
+                currentBlock.show();
+                currentItemsBlock.data('blocknum', currentCount);
+                currentItemsBlock.show();
                 if (j >= channelList.length) {
                     break;
                 }
             }
-
-            WinMove();
         }
 
-        function WinMove() {
-            var parentArray = (typeof(channelList) != 'undefined') ? channelList : {};
-            $("div.box").draggable({
-                revert: true,
-                zIndex: 2000,
-                cursor: "crosshair",
-                handle: '.box-name',
-                class: 'highlight',
-                opacity: 0.8
-            })
-                    .droppable({
-                        tolerance: 'pointer',
-//                activeClass: "ui-state-hover",
-                        hoverClass: "highlight",//"ui-state-active",
-                        drop: function (event, ui) {
-                            var draggable = ui.draggable;
-                            var droppable = $(this);
-                            var dragPos = draggable.position();
-                            var dropPos = droppable.position();
-                            draggable.swap(droppable, parentArray);
-                            setTimeout(function () {
-                                var dropmap = droppable.find('[id^=map-]');
-                                var dragmap = draggable.find('[id^=map-]');
-                                if (dragmap.length > 0 || dropmap.length > 0) {
-                                    dragmap.resize();
-                                    dropmap.resize();
-                                }
-                                else {
-                                    draggable.resize();
-                                    droppable.resize();
-                                }
-
-                            }, 50);
-                            setTimeout(function () {
-
-                                draggable.find('[id^=map-]').resize();
-                                droppable.find('[id^=map-]').resize();
-                            }, 250);
-                            if ($("#channelListContainer").length > 0) {
-                                setTimeout(function () {
-                                    channelListRender('#channelListContainer');
-                                }, 300);
-                            }
-                        }
-                    });
-            $('div.box.no-drop').draggable( "disable" ).droppable( "disable" );
-        }
-
-        function getChannelListItem(num, item){
-            var return_val = '<div class="box '+(item.locked? 'no-drop': '')+'"  style="position:relative; z-index:30;">\n\
-                <div class="box-header '+ (item.empty == '1'? 'empty': '') + '"  style="position:relative; z-index:30;">\n\
-                    <div class="box-name col-sm-11"  style="position:relative; z-index:30;">\n\
-                        <span class="curr_num col-xs-1 col-sm-1 no-padding" data-number="'+num+'">'+item.number+'</span>\n\
-                        <div class="channel col-xs-10 col-sm-10 no-padding">\n\
-                            <span class="no-padding">\n\
-                              <!----  <img class="img-rounded" src="'+item.logo+'" alt="">--->\n\
-                            </span>\n\
-                            <a style="position:relative; z-index:300;" href="'+item.link+'" class="no-padding">'+item.name+'</a>';
-            if (item.empty != '1') {
-                return_val +='<div class="box-icons col-sm-1 no-padding"><a style="position:relative; z-index:300;" class="lock-link">\n\
-                        <i data-id="' + item.id + '" class="fa fa-'+(!item.locked? 'un': '')+'lock"></i>\n\
-                        </a></div>';
+        function sortAndMove(source, direction, items){
+            var totalLength = $(source).data('itemscount'),
+                fixedPos = JSON.parse($(source).data('fixedPos') || '{}'),
+                addItems = items || [], lItem, newNum, currNum;
+            if (Object.keys(fixedPos).length) {
+                $('.sortable-disabled', source).detach().each(function(){
+                    index = $(this).data('pos');
+                    if (typeof (fixedPos[index]) != 'undefined') {
+                        fixedPos[index] = $(this);
+                    }
+                });
             }
-            return_val +='    </div>\n\
-                    </div>';
+            var other = [];
+            if (direction > 0 ) {
+                other = $('div.box', source).detach().toArray().concat(addItems);
+            } else {
+                other = addItems.concat($('div.box', source).detach().toArray());
+            }
+
+            console.log($(source).data());
+
+            for(var i = (direction > 0 ? totalLength - 1 : 0 ); (direction > 0 ? i >= 0: i < totalLength); i-=direction){
+                if (typeof (fixedPos[i]) != 'undefined' || (i == (direction > 0 ? 0 : totalLength - 1) && Object.keys(fixedPos).length == 1 )) {
+                    $(fixedPos[i])[direction > 0 ? 'prependTo': 'appendTo'](source);
+                    delete(fixedPos[i]);
+                } else {
+                    lItem = other[direction > 0 ? 'pop': 'shift']();
+                    currNum = $('span[data-number]', lItem).data('number') - 1;
+                    newNum = $(source).data('blocknum') - totalLength + i;
+
+                    if (typeof(channelList[currNum ]) == 'undefined') {
+                        channelList[currNum] = {id: '', empty: 'empty', old_number: currNum + 1};
+                    }
+                    channelList[currNum]['number'] = newNum;
+
+                    $(lItem)[direction > 0 ? 'prependTo': 'appendTo'](source);
+                }
+            }
+            if (other.length != 0) {
+                source = source.parent('div')[[direction < 0 ? 'next': 'prev']]('div').children('.ui-sortable');
+                sortAndMove(source, direction, other);
+            }
+            $(source).sortable( "refresh" );
 
 
-            return_val +='  <div class="no-move"></div>\n\
-                </div>\n\
-            </div>';
-            return return_val;
+
+            //.data('blocknum', currentCount)
+            //<span class="curr_num col-xs-1 col-sm-1 no-padding" data-number="${num}">${number}</span>
+
+
         }
 
-
-        function closeModalBox(){
-            $.noty.closeAll();
+        function channelDataPrepare(data){
+            if (data && data.data) {
+                for (var i in data.data) {
+                    data.data[i].link = data.data[i].id ? '{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}edit-channel?id=' + data.data[i].id: '';
+                    data.data[i].old_number = data.data[i].number;
+                }
+                channelList = data.data;
+            }
+            channelListRender('#channelListContainer');
         }
-        
+
+        function initListItemsPosition(sourceList){
+            var fixedPos = {};
+            $(sourceList).children('div:not(.ui-sortable-placeholder)').each(function(i){
+                var $this = $(this);
+                if ($this.hasClass('sortable-disabled') && !$this.data('pos')) {
+                    $this.data('pos', i);
+                    fixedPos[i] = 0;
+                }
+            });
+            $(sourceList).data('itemscount', $('div.box:not(.ui-sortable-placeholder)', sourceList).length);
+            $(sourceList).data('fixedPos', JSON.stringify(fixedPos));
+            console.log($(sourceList).data('fixedPos'));
+            console.log($(sourceList).data('itemscount'));
+        }
+
         function showModalBox(){
             notty('<span>{{ 'Request is being processed'|trans }}...</span>','notification');
         }
@@ -305,16 +306,20 @@
             }
         };
         
-        var checkChanges = function(){
-            var dataForSend = new Array();
-                
+        var checkChanges = function(getData){
+            var dataForSend = new Array(),
+                getData = getData || false;
+
             $.each(channelList, function(){
-                if (this.number != this.old_number) {
-                    dataForSend.push({'id': this.id, 'number': this.number, 'old_number': this.old_number})
+                if (this.number != this.old_number && !this.empty) {
+                    dataForSend.push({'id': this.id, 'number': this.number, 'old_number': this.old_number});
+                }
+                if (getData) {
+                    this.old_number = this.number;
                 }
             });
             
-            return dataForSend.length > 0;
+            return getData? dataForSend : dataForSend.length > 0;
         };
         
         window.onunload = function(){
@@ -330,4 +335,29 @@
         };
         
     </script>
+    {% autoescape false %}
+    <script type="text/template" id="list_item">
+        <div class="box ${locked}"  style="position:relative; z-index:30;">
+            <div class="box-header ${empty}"  style="position:relative; z-index:30;">
+                <div class="box-name col-sm-11"  style="position:relative; z-index:30;">
+                    <span class="curr_num col-xs-1 col-sm-1 no-padding" data-number="${num}">${number}</span>
+                    <div class="channel col-xs-10 col-sm-10 no-padding">
+                            <span class="no-padding">
+                              <!----  <img class="img-rounded" src="${logo}" alt="">--->
+                            </span>
+                        <a style="position:relative; z-index:300;" href="${link}" class="no-padding">${name}</a>
+                        {{ "{{if notempty == '1'}}" }}
+                        <div class="box-icons col-sm-1 no-padding">
+                            <a style="position:relative; z-index:300;" class="lock-link">
+                                <i data-id="${id}" class="fa fa-{{ "{{if notlocked == '1'}}" }}un{{ '{{/if}}' }}lock"></i>
+                            </a>
+                        </div>
+                        {{ '{{/if}}' }}
+                    </div>
+                </div>
+                <div class="no-move"></div>
+            </div>
+        </div>
+    </script>
+    {% endautoescape %}
 {% endblock %}

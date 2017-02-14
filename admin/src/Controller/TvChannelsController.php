@@ -96,26 +96,9 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         if ($no_auth = $this->checkAuth()) {
             return $no_auth;
         }
-
-        $filter = array();
-
-        if ($this->method == 'GET' && !empty($this->data['filters'])) {
-            $filter = $this->getIPTVfilters();
-        }
-
-        $allChannels = $this->db->getAllChannels(array('select' => $this->getAllChannelsFields(), 'where' => $filter, 'order'=> array('number' => 'ASC')));
-
-        if (is_array($allChannels)) {
-            while (list($num, $row) = each($allChannels)) {
-                $allChannels[$num]['logo'] = $this->getLogoUriById(FALSE, $row, 120);
-                $allChannels[$num]['locked'] = (bool)$allChannels[$num]['locked'];
-            }
-            if (((int)$allChannels[0]['number']) == 0) {
-                array_push($allChannels, $allChannels[0]);
-                unset($allChannels[0]);
-            }
-        }
-        $this->app['allChannels'] = $this->fillEmptyRows($allChannels);
+/*
+        $allChannels = $this->move_channel_list_json(TRUE);
+        $this->app['allChannels'] = $allChannels['data'];*/
 
         return $this->app['twig']->render($this->getTemplateName(__METHOD__));
     }
@@ -525,6 +508,65 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         return (!$internal_use) ? new Response(json_encode($response), (empty($error) ? 200 : 500)): $response;
     }
 
+    public function move_channel_list_json($local_uses = FALSE){
+        if ($no_auth = $this->checkAuth()) {
+            return $no_auth;
+        }
+
+        if (!$this->isAjax && !$local_uses) {
+            $this->app->abort(404, $this->setLocalization('The unexpected request'));
+        }
+
+        $response = array(
+            'data' => array(),
+            'recordsTotal' => 0,
+            'recordsFiltered' => 0,
+            'action' => 'channelDataPrepare'
+        );
+
+        $error = $this->setLocalization("Error");
+
+        $query_param = array();
+        $query_param['select'] = array('itv.id', 'itv.name', 'itv.number', 'itv.logo', 'itv.locked');
+
+        $begin_val = !empty($this->postData['channel_begin']) ? intval($this->postData['channel_begin']) : 1;
+        $end_val =  !empty($this->postData['channel_end']) ? intval($this->postData['channel_end']) : $begin_val + 499;
+
+        $query_param['where'] = array(
+            'itv.number >=' => $begin_val,
+            'itv.number <=' => $end_val,
+        );
+
+        $query_param['limit'] = array(
+            'offset' => 0,
+            'limit' => $end_val - $begin_val + 1
+        );
+
+        $response['recordsTotal'] = $this->db->getTotalRowsAllChannels();
+        $response["recordsFiltered"] = $this->db->getTotalRowsAllChannels($query_param['where']);
+        $allChannels = $this->db->getAllChannels($query_param);
+        if (is_array($allChannels)) {
+            while (list($num, $row) = each($allChannels)) {
+                $allChannels[$num]['logo'] = $this->getLogoUriById(FALSE, $row, 120);
+                $allChannels[$num]['locked'] = (bool)$allChannels[$num]['locked'];
+            }
+            if (((int)$allChannels[0]['number']) == 0) {
+                /*array_push($allChannels, $allChannels[0]);*/
+                unset($allChannels[0]);
+            }
+        } else {
+            $allChannels = array();
+        }
+        $response['data'] = $this->fillEmptyRows($allChannels, $begin_val, $end_val);
+        $error = '';
+        if ($this->isAjax && !$local_uses) {
+            $response = $this->generateAjaxResponse($response);
+            return new Response(json_encode($response), (empty($error) ? 200 : 500));
+        } else {
+            return $response;
+        }
+    }
+
     public function move_apply() {
         if ($no_auth = $this->checkAuth()) {
             return $no_auth;
@@ -675,7 +717,7 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         }
 
         $error = $this->setLocalization("Error");
-        $param = (!empty($this->data)?$this->data: $this->postData);;
+        $param = (!empty($this->data)?$this->data: $this->postData);
 
         $query_param = $this->prepareDataTableParams($param, array('operations', 'RowOrder', '_'));
 
@@ -1783,19 +1825,26 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         return $filters;
     }
 
-    private function fillEmptyRows($input_array = array()){
+    private function fillEmptyRows($input_array = array(), $begin = 1, $end = 501){
         $result = array();
         $empty_row = array('logo'=>'', 'name' =>'', 'id'=>'', 'number'=>0, 'empty'=>TRUE, 'locked'=>FALSE);
         reset($input_array);
-        $begin_val = 1;
+        $begin_val = $begin;
+        $end_val = empty($end) ? count($input_array) : $end;
+        if (empty($input_array)) {
+            $input_array[0] = $empty_row;
+            $input_array[0]['number'] = $begin + $end;
+        }
         while(list($key, $row) = each($input_array)){
             while ($begin_val < $row['number']) {
                 $empty_row['number'] = $begin_val;
                 $result[] = $empty_row;
                 $begin_val++;
             }
-            $row['empty'] = FALSE;
-            $result[] = $row;
+            if (!array_key_exists('empty', $row)) {
+                $row['empty'] = FALSE;
+                $result[] = $row;
+            }
             $begin_val++;
         }
         reset($result);

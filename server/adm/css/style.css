@@ -3527,10 +3527,28 @@ span.serial + span{
     border-left-color: #CCC !important;
 }
 
-#iptv_list .leftbordercircle input[type=text]:first-of-type{
-    border-radius: 12px 0 0 12px;
+.leftbordercircle input[type=text]:first-of-type{
+    border-radius: 12px 0 0 12px !important;
 }
 
+.channel_diapason{
+    float: left !important;
+}
+
+.channel_diapason .leftbordercircle input[type=text]:first-of-type {
+    border-left: 1px solid #ccc !important;
+    padding-left: 12px !important;
+}
+
+.rightbordercircle input[type=text]:first-of-type{
+    border-radius: 0 12px 12px 0 !important;
+}
+
+.channel_diapason label:first-of-type{
+    float: left;
+    margin-top: 10px;
+    font-weight: normal;
+}
 #iptv_list .btn-success, #iptv_list_move .btn-success, #iptv_list_move .DTTT_button_print, {
     background-color: #0F9C16;
 }
