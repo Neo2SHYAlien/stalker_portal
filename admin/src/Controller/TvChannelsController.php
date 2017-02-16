@@ -530,25 +530,29 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         $query_param['select'] = array('itv.id', 'itv.name', 'itv.number', 'itv.logo', 'itv.locked');
 
         $begin_val = !empty($this->postData['channel_begin']) ? intval($this->postData['channel_begin']) : 1;
-        $end_val =  !empty($this->postData['channel_end']) ? intval($this->postData['channel_end']) : $begin_val + 499;
+        $end_val =  !empty($this->postData['channel_end']) ? intval($this->postData['channel_end']) + 1: $begin_val + 199;
 
         $query_param['where'] = array(
             'itv.number >=' => $begin_val,
-            'itv.number <=' => $end_val,
+            'itv.number < ' => $end_val,
         );
 
         $query_param['limit'] = array(
             'offset' => 0,
-            'limit' => $end_val - $begin_val + 1
+            'limit' => $end_val - $begin_val
         );
+
+        $query_param['order'] = 'number';
 
         $response['recordsTotal'] = $this->db->getTotalRowsAllChannels();
         $response["recordsFiltered"] = $this->db->getTotalRowsAllChannels($query_param['where']);
         $allChannels = $this->db->getAllChannels($query_param);
+
         if (is_array($allChannels)) {
             while (list($num, $row) = each($allChannels)) {
                 $allChannels[$num]['logo'] = $this->getLogoUriById(FALSE, $row, 120);
                 $allChannels[$num]['locked'] = (bool)$allChannels[$num]['locked'];
+                settype($allChannels[$num]['number'], 'int');
             }
             if (((int)$allChannels[0]['number']) == 0) {
                 /*array_push($allChannels, $allChannels[0]);*/
@@ -578,20 +582,21 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         $senddata = array('action' => 'manageChannel');
         if (empty($this->postData['data'])) {
             $senddata['error'] = $this->setLocalization('No moved items, nothing to do');
-            $senddata['nothing_to_do'] = TRUE;
+            /*$senddata['nothing_to_do'] = TRUE;*/
         } else {
             $senddata['error'] = '';
             foreach ($this->postData['data'] as $row) {
                 if (empty($row['id'])) {
                     continue;
                 }
-                if (!$this->db->updateChannelNum($row)) {
+                $result = $this->db->updateChannelNum($row);
+                if (!is_numeric($result)) {
                     $senddata['error'] = $this->setLocalization('Failed to save, update the channel list');
                 }
             }
         }
         $response = $this->generateAjaxResponse($senddata, $senddata['error']);
-        return new Response(json_encode($response), (empty($error) ? 200 : 500));
+        return new Response(json_encode($response), (empty($senddata['error']) ? 200 : 500));
     }
 
     public function toogle_lock_channel(){
@@ -1825,15 +1830,15 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         return $filters;
     }
 
-    private function fillEmptyRows($input_array = array(), $begin = 1, $end = 501){
+    private function fillEmptyRows($input_array = array(), $begin = 1, $end = 201){
         $result = array();
         $empty_row = array('logo'=>'', 'name' =>'', 'id'=>'', 'number'=>0, 'empty'=>TRUE, 'locked'=>FALSE);
         reset($input_array);
         $begin_val = $begin;
-        $end_val = empty($end) ? count($input_array) : $end;
-        if (empty($input_array)) {
-            $input_array[0] = $empty_row;
-            $input_array[0]['number'] = $begin + $end;
+        $count = count($input_array);
+        if ($count < $end) {
+            $input_array[$count] = $empty_row;
+            $input_array[$count]['number'] = $end;
         }
         while(list($key, $row) = each($input_array)){
             while ($begin_val < $row['number']) {
