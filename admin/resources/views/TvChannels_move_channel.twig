@@ -59,6 +59,7 @@
                     $("#modalbox").data('complete', 1);
                     return false;
                 });
+
                 $(document).on('keyup', "#searc_and_backlight input[type='text']", function(e){
                     if (typeof(e) != 'undefined' && typeof(e.type) != 'undefined' && e.type=='keyup' && e.keyCode == 13) {
                         setBackLightFocus();
@@ -115,37 +116,13 @@
                 $('#channelListContainer').on('click', 'a.remove-link', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var parentList = $(this).closest('.droptrue');
-                    var thisElem = $(this).closest('div.box');
 
                     var offset = channelList[channelList.length - 1].old_number - channelList.length;
                     var childID = parseInt($(this).closest('.box').find('span.curr_num').data('number'), 10) - 1 - offset;
 
-                    $(thisElem.detach()).appendTo('#channelListContainer div.ui-sortable:last');
-
-
-
-                    /*$(this).closest('div.box').remove();
-                    channelList.splice(childID, 1);*/
-
-                    /*ajaxPostSend('{{ app['controller_alias'] }}/channel-move-up', {number: channelList[childID].number});*/
-                    /*initListItemsPosition($(this).closest('.droptrue'));*/
-                    sortAndMove($('#channelListContainer div.ui-sortable:last'), 1);
-                    var sendData = {channel_begin: channelList[childID].number + 1, channel_end: channelList[childID].number + 1, oneitem: true};
-
-                    thisElem.remove();
-                    channelList.splice(childID, 1);
-                    for( var i = childID; i < channelList.length; i++){
-                        channelList[i].number--;
-                        $('#channelListContainer span.curr_num[data-number="' + channelList[i].old_number + '"]').data('number', channelList[i].old_number - 1);
-                        channelList[i].old_number--;
-                    }
-
-                    $('#channelListContainer div.ui-sortable:not(last)').sortable('refresh');
+                    var sendData = {channel_begin: channelList[channelList.length - 1].old_number + 1, channel_end: channelList[channelList.length - 1].old_number + 1, oneitem: childID};
 
                     ajaxPostSend('{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}move-channel-list-json', sendData, false, false, true);
-                    /*parentList.sortable('refresh');*/
-                    /*$("#modalbox").data('complete', 1);*/
                     return false;
                 });
 
@@ -236,7 +213,7 @@
                     item['empty'] = item['empty'] ? 'empty' : '';
                     item['notlocked'] = item['locked'] ? '0': '1';
                     item['locked'] = item['locked'] ? 'sortable-disabled' : 'sortable-enabled';
-                    $("#list_item").tmpl(item).appendTo(currentItemsBlock);
+                    channelList[j]['instance'] = $("#list_item").tmpl(item).appendTo(currentItemsBlock);
                     i++;
                 }
                 currentBlock.prepend('<div class=" counter"><span>' + (channelList[currentCount].number) + '-'+ (channelList[j - 1].number) + '</span></div>');
@@ -301,6 +278,7 @@
                 for (var i in data.data) {
                     data.data[i].link = data.data[i].id ? '{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}edit-channel?id=' + data.data[i].id: '';
                     data.data[i].old_number = data.data[i].number;
+                    data.data[i].changed = false;
                 }
                 channelList = data.data;
             }
@@ -339,7 +317,7 @@
                 getData = getData || false;
 
             $.each(channelList, function(){
-                if (this.number != this.old_number && !this.empty) {
+                if ((this.number != this.old_number || this.changed) && !this.empty) {
                     dataForSend.push({'id': this.id, 'number': this.number, 'old_number': this.old_number});
                     if (getData) {
                         this.old_number = this.number;
@@ -371,20 +349,29 @@
         }
 
         function appendToEnd(data) {
-            var addItem  = data.data[0];
-            addItem.link = addItem.id ? '{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}edit-channel?id=' + addItem.id: '';
-            addItem.number --;
-            addItem.old_number = addItem.number;
-            channelList[addItem.number] = addItem;
+            if (data.oneitem && channelList[data.oneitem]) {
+                var addItem  = data.data[0];
+                addItem.link = addItem.id ? '{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}edit-channel?id=' + addItem.id: '';
+                addItem.number = channelList[data.oneitem].number;
+                addItem.old_number = channelList[data.oneitem].old_number;
+                addItem.changed = true;
 
-            addItem['notempty'] = addItem['empty'] ? '0': '1';
-            addItem['empty'] = addItem['empty'] ? 'empty' : '';
-            addItem['notlocked'] = addItem['locked'] ? '0': '1';
-            addItem['locked'] = addItem['locked'] ? 'sortable-disabled' : 'sortable-enabled';
+                addItem['notempty'] = addItem['empty'] ? '0': '1';
+                addItem['empty'] = addItem['empty'] ? 'empty' : '';
+                addItem['notlocked'] = addItem['locked'] ? '0': '1';
+                addItem['locked'] = addItem['locked'] ? 'sortable-disabled' : 'sortable-enabled';
 
-            $("#list_item").tmpl(addItem).appendTo($('#channelListContainer div.ui-sortable:last'));
+                addItem['instance'] = $("#list_item").tmpl(addItem).appendTo($('#channelListContainer div.ui-sortable:last'));
 
-            $('#channelListContainer div.ui-sortable:not(last)').sortable('refresh');
+                channelList[data.oneitem].instance.remove();
+                channelList[data.oneitem] = addItem;
+            }
+            sortAndMove($('#channelListContainer div.ui-sortable:last'), 1);
+            $('#channelListContainer').delay(10).promise().done(function() {
+                $('div.ui-sortable', this).each(function(){
+                    initListItemsPosition(this);
+                });
+            });
         }
 
         window.onunload = function(){

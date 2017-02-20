@@ -524,10 +524,6 @@ class TvChannelsController extends \Controller\BaseStalkerController {
             'action' => 'channelDataPrepare'
         );
 
-        if (!empty($this->postData['oneitem'])) {
-            $response['action'] = 'appendToEnd';
-        }
-
         $error = $this->setLocalization("Error");
 
         $query_param = array();
@@ -537,9 +533,16 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         $end_val =  !empty($this->postData['channel_end']) ? intval($this->postData['channel_end']) + 1: $begin_val + 199;
 
         $query_param['where'] = array(
-            'itv.number >=' => $begin_val,
-            'itv.number < ' => $end_val,
+            'itv.number >=' => $begin_val
         );
+
+        if (array_key_exists('oneitem', $this->postData)) {
+            $response['oneitem'] = $this->postData['oneitem'];
+            $response['action'] = 'appendToEnd';
+            $query_param['where']['itv.locked'] = 0;
+        } else {
+            $query_param['where']['itv.number < '] = $end_val;
+        }
 
         $query_param['limit'] = array(
             'offset' => 0,
@@ -547,10 +550,13 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         );
 
         $query_param['order'] = 'number';
-
         $response['recordsTotal'] = $this->db->getTotalRowsAllChannels();
         $response["recordsFiltered"] = $this->db->getTotalRowsAllChannels($query_param['where']);
         $allChannels = $this->db->getAllChannels($query_param);
+
+        if (array_key_exists('oneitem', $this->postData) && !empty($allChannels)) {
+            $begin_val = $end_val = $allChannels[0]['number'];
+        }
 
         if (is_array($allChannels)) {
             while (list($num, $row) = each($allChannels)) {
@@ -585,18 +591,8 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         }
         $senddata = array('action' => 'manageChannel');
 
-        $new_numbers = $this->getFieldFromArray($this->postData['data'], 'number');
-
-
-        print_r($new_numbers);
-        echo PHP_EOL, count($new_numbers), PHP_EOL;
-        $new_numbers = array_unique($new_numbers);
-        print_r($new_numbers);
-        echo PHP_EOL, count($new_numbers), PHP_EOL;
-        exit;
         if (empty($this->postData['data'])) {
             $senddata['error'] = $this->setLocalization('No moved items, nothing to do');
-            /*$senddata['nothing_to_do'] = TRUE;*/
         } else {
             $senddata['error'] = '';
             foreach ($this->postData['data'] as $row) {
