@@ -524,6 +524,10 @@ class TvChannelsController extends \Controller\BaseStalkerController {
             'action' => 'channelDataPrepare'
         );
 
+        if (!empty($this->postData['oneitem'])) {
+            $response['action'] = 'appendToEnd';
+        }
+
         $error = $this->setLocalization("Error");
 
         $query_param = array();
@@ -580,6 +584,16 @@ class TvChannelsController extends \Controller\BaseStalkerController {
             $this->app->abort(404, $this->setLocalization('The unexpected request'));
         }
         $senddata = array('action' => 'manageChannel');
+
+        $new_numbers = $this->getFieldFromArray($this->postData['data'], 'number');
+
+
+        print_r($new_numbers);
+        echo PHP_EOL, count($new_numbers), PHP_EOL;
+        $new_numbers = array_unique($new_numbers);
+        print_r($new_numbers);
+        echo PHP_EOL, count($new_numbers), PHP_EOL;
+        exit;
         if (empty($this->postData['data'])) {
             $senddata['error'] = $this->setLocalization('No moved items, nothing to do');
             /*$senddata['nothing_to_do'] = TRUE;*/
