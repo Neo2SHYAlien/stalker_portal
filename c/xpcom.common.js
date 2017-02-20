@@ -949,7 +949,7 @@ function common_xpcom(){
                 'metrics'          : encodeURIComponent(JSON.stringify(metrics)),
                 'hw_version_2'     : stb.GetHashVersion1 ? stb.GetHashVersion1(JSON.stringify(metrics), this.random) : '',
                 'timestamp'        : Math.round(new Date().getTime()/1000),
-                'api_signature'    : (function(){var p=0;for(var d in gSTB){if(gSTB.hasOwnProperty(d)){p++}} return p})(),
+                'api_signature'    : typeof(gSTB) == 'undefined' ? 0 : (function(){var p=0;for(var d in gSTB){if(gSTB.hasOwnProperty(d)){p++}} return p})(),
                 'prehash'          : prehash
             },
 
@@ -2134,11 +2134,39 @@ function common_xpcom(){
 
         campaigns : [],
         ticking_timeout : 0,
+        disabled : false,
+        disabled_time : 900,
+
+        disable : function(){
+            _debug('stb.advert.disable');
+
+            if (this.disabled){
+                return;
+            }
+
+            this.disabled = true;
+
+            var self = this;
+
+            window.clearTimeout(this.disabled_to);
+            this.disabled_to = window.setTimeout(function () {
+                self.enable();
+            }, this.disabled_time * 1000)
+        },
+
+        enable : function(){
+            _debug('stb.advert.enable');
+
+            this.disabled = false;
+        },
 
         start : function (cb) {
             _debug('stb.advert.get_ad');
 
             var callback = function () {
+
+                stb.key_lock = false;
+
                 try{
                     stb.Stop();
                 }catch(e){
@@ -2149,6 +2177,11 @@ function common_xpcom(){
 
                 cb();
             };
+
+            if (this.disabled){
+                callback();
+                return;
+            }
 
             stb.key_lock = true;
 
