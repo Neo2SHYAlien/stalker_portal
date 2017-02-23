@@ -3827,7 +3827,8 @@ z-index:10;
     white-space: nowrap;
 }
 
-.box_v2 .box-header .channel a.name-link + a{
+.box_v2 .box-header .channel a.name-link + a,
+.box_v2 .counter .counter-add-link{
     position: relative;
     z-index: 300;
     color: #b8b8b8 !important;
@@ -3838,7 +3839,14 @@ z-index:10;
     width: 24px;
 }
 
-.box_v2 .box-header .channel a.lock-link i.fa-lock{
+.box_v2 .counter .counter-add-link{
+    margin-right: 30px;
+    margin-left: -54px;
+    cursor: pointer;
+}
+
+.box_v2 .box-header .channel a.lock-link i.fa-lock,
+.box_v2 .counter .counter-add-link:hover{
     color: #666 !important;
 }
 

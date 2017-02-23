@@ -581,6 +581,85 @@ class TvChannelsController extends \Controller\BaseStalkerController {
         }
     }
 
+    public function move_channel_move_number($local_uses = FALSE ){
+
+        if ($no_auth = $this->checkAuth()) {
+            return $no_auth;
+        }
+
+        if ((!$this->isAjax && !$local_uses) || ($this->isAjax && empty($this->postData['start_num']))) {
+            $this->app->abort(404, $this->setLocalization('The unexpected request'));
+        }
+
+        $response = array(
+            'data' => array(),
+            'action' => ''
+        );
+
+        $error = $this->setLocalization('Out of range. The shift is not possible.');
+        $start_num = $this->postData['start_num'];
+        $direction = $this->isAjax && !empty($this->postData['direction']) ? $this->postData['direction'] : 1;
+        if ($direction == 1) {
+            $free_num = $this->db->getFirstFreeNumber('itv', 'number', $start_num, $direction);
+        } else {
+            $free_num = $this->db->getLastChannelNumber();
+        }
+
+        if ($free_num > 0 && $free_num < 99999) {
+            $error = '';
+            $params = array(
+                'select' => array('`itv`.`id` as `id`', '`itv`.`number` as `number`', '`itv`.`locked` as `locked`'),
+                'where' => array('`itv`.`number`>=' => $start_num),
+                'order' => array('number' => ($direction == 1 ? 'ASC': 'DESC'))
+            );
+
+            if ($direction == 1) {
+                $params['where']['`itv`.`number`<'] = $free_num;
+            }
+
+            $channels = $this->db->getAllChannels($params);
+
+            $params['set'] = array('`number` = `number` + ' . $direction . ', `modified`' => 'NOW()');
+
+            $response['result'] = $this->db->updateChannelGroup($params);
+            $response['result_back'] = 0;
+            if (is_numeric($response['result']) && $response['result'] != 0) {
+                $set_locked = array('`number` = `number` - ' . $direction . ', `modified`' => 'NOW()');
+                $set_before_locked = array('`number` = `number` + ' . $direction . ', `modified`' => 'NOW()');
+                $params_back = array(
+                    'set' => array(),
+                    'where' => array('id' => '')
+                );
+                reset($channels);
+                foreach($channels as $key => $channel){
+                    if ($channel['locked']) {
+                        $params_back['set'] = $set_locked;
+                        $params_back['where']['id'] = $channel['id'];
+                        $response['result_back'] += $this->db->updateChannelGroup($params_back);
+                        $move_up = $key - 1;
+                        while (array_key_exists($move_up, $channels) ) {
+                            if (!$channels[$move_up]['locked']) {
+                                $params_back['set'] = $set_before_locked;
+                                $params_back['where']['id'] = $channels[$move_up]['id'];
+                                $this->db->updateChannelGroup($params_back);
+                                break;
+                            } else {
+                                $move_up--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($this->isAjax && !$local_uses) {
+            $response = $this->generateAjaxResponse($response);
+            return new Response(json_encode($response), (empty($error) ? 200 : 500));
+        } else {
+            return $response;
+        }
+    }
+
     public function move_apply() {
         if ($no_auth = $this->checkAuth()) {
             return $no_auth;

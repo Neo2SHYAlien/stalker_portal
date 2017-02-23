@@ -98,21 +98,26 @@ class BaseStalkerModel {
         return $this->mysqlInstance->from('admin_dropdown_attributes')->where($param)->get()->first();
     }
 
-
-    public function getFirstFreeNumber($table, $field = 'number') {
-        $min = (int) $this->mysqlInstance->query("SELECT min(`$table`.`$field`) as `empty_number` FROM `$table`")->first('empty_number');
-        if ($min > 1 || $min < 1) {
-            return 1;
+    public function getFirstFreeNumber($table, $field = 'number', $offset = 1, $direction = 1) {
+        if ($direction == 1) {
+            $func =  'min';
+            $compare = '>=';
+            $order = 'ASC';
+            $operation = '+';
         } else {
-            return $this->mysqlInstance
-                ->query("SELECT (`$table`.`$field`+1) as `empty_number`
+            $func =  'max';
+            $compare = '<=';
+            $order = 'DESC';
+            $operation = '-';
+        }
+        return $this->mysqlInstance
+            ->query("SELECT (`$table`.`$field` $operation 1) as `empty_number`
                     FROM `$table`
                     WHERE (
-                        SELECT 1 FROM `$table` as `st` WHERE `st`.`$field` = (`$table`.`$field` + 1) LIMIT 1
-                    ) IS NULL
-                    ORDER BY `$table`.`$field`
+                        SELECT 1 FROM `$table` as `st` WHERE `st`.`$field` = (`$table`.`$field` $operation 1) AND `st`.`$field` $compare $offset LIMIT 1
+                    ) IS NULL AND `$table`.`$field` $compare $offset
+                    ORDER BY `$table`.`$field` $order
                     LIMIT 1")
-                ->first('empty_number');
-        }
+            ->first('empty_number');
     }
 }

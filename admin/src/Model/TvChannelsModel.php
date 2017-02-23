@@ -268,6 +268,27 @@ class TvChannelsModel extends \Model\BaseStalkerModel {
     public function updateChannelNum($row) {
         return $this->mysqlInstance->update('itv', array('number' => $row['number'], 'modified' => 'NOW()'), array('id' => $row['id']))->total_rows();
     }
+
+    public function updateChannelGroup($params) {
+        if (array_key_exists('in', $params)) {
+            reset($params['in']);
+            while (list($field, $values) = each($params['in'])){
+                $this->mysqlInstance->in($field, $values);
+            }
+        }
+        if (array_key_exists('order', $params)) {
+            $this->mysqlInstance->orderby($params['order']);
+        }
+        if (!array_key_exists('where', $params)) {
+            $params['where'] = array();
+        }
+        if (!array_key_exists('set', $params)) {
+            $params['set'] = array();
+        }
+
+        // $params['set']['modified'] = 'NOW()';
+        return $this->mysqlInstance->update('itv', $params['set'], $params['where'])->total_rows();
+    }
     
     public function updateChannelLockedStatus($row) {
         return $this->mysqlInstance->update('itv', array('locked' => $row['locked'], 'modified' => 'NOW()'), array('id' => $row['id']))->total_rows();
@@ -428,4 +449,5 @@ class TvChannelsModel extends \Model\BaseStalkerModel {
             ),
             array('media_id' => intval($media_id)))->total_rows();
     }
+
 }

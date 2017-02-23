@@ -126,6 +126,77 @@
                     return false;
                 });
 
+                $('#channelListContainer').on('click', 'a.counter-add-link', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var offset = channelList[channelList.length - 1].old_number - channelList.length,
+                        currList = $(this).closest('div.counter').next('div.ui-sortable'),
+                        emptyBlockList = currList,
+                        emptyBlock = $(emptyBlockList.find('div.box.sortable-enabled:not(.empty)').get(0));
+                    while(!emptyBlock || !emptyBlock.hasClass('empty')){
+                        if (emptyBlock.next().length) {
+                            emptyBlock = emptyBlock.next();
+                        } else {
+                            if (emptyBlockList.parent('div').next('div').length != 0) {
+                                emptyBlockList = emptyBlockList.parent('div').next('div').children('div.ui-sortable');
+                            } else {
+                                emptyBlock = $('#channelListContainer div.ui-sortable:last div.box.sortable-enabled:last');
+                                break;
+                            }
+                        }
+                    }
+                    var lastBlockNum = $('span[data-number]', emptyBlock).data('number') - 1 - offset,
+                        lastChannel = channelList[lastBlockNum],
+                        addItem = {
+                            link: '',
+                            number: lastChannel.number,
+                            old_number: lastChannel.old_number,
+                            changed: true,
+                            notempty: '0',
+                            empty: 'empty',
+                            notlocked: '1',
+                            locked: 'sortable-enabled',
+                            instance: undefined
+                        },
+                        start_num = $(this).closest('div.counter').next('div.ui-sortable').children('div.box.sortable-enabled:not(.empty)').find('span[data-number]').data('number');
+                    if (typeof (start_num) == 'undefined') {
+                        start_num = $(this).data('fromnumber');
+                    }
+                    $.ajax({
+                        url: '{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}move-channel-move-number',
+                        type: 'POST',
+                        data: {start_num: start_num, direction: 1},
+                        success: function (data) {
+                            ajaxSuccess(data);
+                            addItem.instance = $("#list_item").tmpl(addItem).prependTo(currList);
+                            lastChannel.instance.remove();
+                            channelList[lastBlockNum] = addItem;
+
+                            sortAndMove(currList, -1);
+                            $('#channelListContainer').delay(10).promise().done(function() {
+                                $('div.ui-sortable', this).each(function(){
+                                    initListItemsPosition(this);
+                                });
+                            });
+                        },
+                        error: function (data) {
+                            if (data.readyState == 4 || data.status != 0) {
+                                if (typeof(data.nothing_to_do) != 'undefined' && data.nothing_to_do) {
+                                    JScloseModalBox();
+                                } else {
+                                    ajaxError(data);
+                                }
+                            }
+                        },
+                        timeout: 0,
+                        dataType: "json",
+                        async: false
+                    });
+
+                    return false;
+                });
+
                 $(document).on('click', '#iptv_list_move_show', function(e){
                     showModalBox();
                     $('#channelListContainer').empty().delay(1000).promise().done(function(){
@@ -216,7 +287,8 @@
                     channelList[j]['instance'] = $("#list_item").tmpl(item).appendTo(currentItemsBlock);
                     i++;
                 }
-                currentBlock.prepend('<div class=" counter"><span>' + (channelList[currentCount].number) + '-'+ (channelList[j - 1].number) + '</span></div>');
+
+                $("#list_counter").tmpl({from: channelList[currentCount].number, to: channelList[j - 1].number}).prependTo(currentBlock);
                 currentCount = j;
                 currentBlock.css('top', 0);
                 currentBlock.css('left', (Math.ceil(currentCount/maxItemOnBlock) - 1)*250);
@@ -350,7 +422,9 @@
 
         function appendToEnd(data) {
             if (data.oneitem && channelList[data.oneitem]) {
-                var addItem  = data.data[0];
+                var addItem  = data.data[0],
+                    start_num = channelList[data.oneitem].old_number;
+
                 addItem.link = addItem.id ? '{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}edit-channel?id=' + addItem.id: '';
                 addItem.number = channelList[data.oneitem].number;
                 addItem.old_number = channelList[data.oneitem].old_number;
@@ -365,6 +439,7 @@
 
                 channelList[data.oneitem].instance.remove();
                 channelList[data.oneitem] = addItem;
+                ajaxPostSend('{{ app.request.baseUrl ~ '/' ~ app.controller_alias  ~ '/' }}move-channel-move-number', {start_num: start_num, direction: -1});
             }
             sortAndMove($('#channelListContainer div.ui-sortable:last'), 1);
             $('#channelListContainer').delay(10).promise().done(function() {
@@ -389,7 +464,7 @@
     </script>
     {% autoescape false %}
     <script type="text/template" id="list_item">
-        <div class="box ${locked}"  style="position:relative; z-index:30;">
+        <div class="box ${locked} ${empty}"  style="position:relative; z-index:30;">
             <div class="box-header ${empty}"  style="position:relative; z-index:30;">
                 <div class="box-name col-sm-11"  style="position:relative; z-index:30;">
                     <span class="curr_num col-xs-2 col-sm-2 no-modified no-padding" data-number="${old_number}">${number}</span>
@@ -411,6 +486,14 @@
                 </div>
                 <div class="no-move"></div>
             </div>
+        </div>
+    </script>
+    <script type="text/template" id="list_counter">
+        <div class="counter">
+            <span>${from} - ${to}</span>
+            <a class="counter-add-link" data-fromnumber="${from}">
+                <i class="fa fa-plus"></i>
+            </a>
         </div>
     </script>
     <script type="text/template" id="modal_form_buttons">
