@@ -564,7 +564,7 @@ class TvChannelsController extends \Controller\BaseStalkerController {
                 $allChannels[$num]['locked'] = (bool)$allChannels[$num]['locked'];
                 settype($allChannels[$num]['number'], 'int');
             }
-            if (((int)$allChannels[0]['number']) == 0) {
+            if (!empty($allChannels[0]) && ((int)$allChannels[0]['number']) == 0) {
                 /*array_push($allChannels, $allChannels[0]);*/
                 unset($allChannels[0]);
             }
